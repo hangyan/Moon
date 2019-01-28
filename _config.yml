@@ -7,11 +7,10 @@ markdown: kramdown
 kramdown:
   syntax_highlighter: rouge
 
-name: Alex的Notebook
-bio: 雄关漫道真如铁，而今迈步从头越
+name: Blog
+bio: Nothing is true
 logo: "/img/sin.jpg"
-# url: http://jaeger.itscoder.com/
-email: qqliao_shu_feng@163.com
+email: hang.yan@hotmail.com
 fav: "/assets/img/fav/favicon.ico"
 
 defaults:
@@ -40,7 +39,4 @@ navs:
 # ---------------- #
 #      Socials     #
 # ---------------- #
-github_id: alexknight
-weibo_id: 6518850128
-zhihu_id: alexknight
-blog_id: alexkn
+github_id: hangyan
