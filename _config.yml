@@ -9,9 +9,9 @@ kramdown:
 
 name: Blog
 bio: Nothing is true
-logo: "/images/th.jpeg"
+logo: "/favicon.png"
 email: hang.yan@hotmail.com
-fav: "/assets/img/fav/favicon.ico"
+fav: "/assets/img/fav/favicon.png"
 
 defaults:
  -
