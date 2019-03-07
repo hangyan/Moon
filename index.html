@@ -19,7 +19,8 @@ permalink: /
         {% include header.html %}
         <div class="content-main">
             <div class="post-list">
-                {% for post in site.posts %}
+                {% assign posts = site.posts | where: "layout", "post" %}
+                {% for post in posts %}
                 <a href="{{ post.url }}">
                     <div class="post-item">
                         <span class="post-title">{{ post.title }}</span>
