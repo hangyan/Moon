@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="theme-color" content="#151515" />
+    <title>{{page.title}}</title>
+    <link rel="stylesheet" type="text/css" href="/css/base.css">
+    <link rel="stylesheet" type="text/css" href="/css/header.css">
+    <link rel="stylesheet" type="text/css" href="/css/post.css">
+    <link rel="stylesheet" type="text/css" href="/css/syntax.css"> {% if page.favicon %}
+    <link rel="icon" href={{page.favicon}}> {% else %}
+    <link rel="icon" href=/assets/img/fav/favicon.png> {% endif %}
+
+</head>
+
+<body>
+    <div class="content-wrap">
+        <div class="content-main">
+            <div class="header">
+                <div class="nav-home">
+                    <a href="/">
+                        <span>{{ site.name }}</span>
+                        <img src="{{ site.logo }}" />
+                    </a>
+                </div>
+                <br />
+                <br />
+            </div>
+            <div class="microblog-post--single">
+                {{ content }}
+                <footer class="microblog-post__footer">
+                  <small><time datetime="{{ page.date | date_to_xmlschema }}"><a href="{{ page.url }}" title="Permalink to Microblog post">{{ page.date | date: "%a, %b %d, %Y at %I:%M%P" }}</time></a> by Timothy B. Smith</small>
+                </footer>
+              </div>
+        </div>
+    </div>
+
+    
+    {% include footer.html %} 
+    {% include cnzz.html %}
+</body>
+
+</html>
