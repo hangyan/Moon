@@ -22,7 +22,7 @@ permalink: /microblog/
                 <section class="microblog-posts">
                     {% for post in site.microblog reversed %}
                       <div class="microblog-post">
-                        <strong>{{ post.content }}</strong>
+                        <i>{{ post.content }}</i>
                         <footer class="microblog-post__footer">
                             <p align="right"><small><time datetime="{{ post.date | date_to_xmlschema }}"><a href="{{ post.url }}" title="Permalink to Microblog post">{{ post.date | date: "%a, %b %d, %Y at %I:%M%P" }}</time></a></small></p>
                         </footer>
