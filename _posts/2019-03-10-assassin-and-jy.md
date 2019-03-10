@@ -78,10 +78,10 @@
 
 ## 信条
 
-如游戏名字一样，信条是一个横贯其中的精神内核。Nothing is ture, everything is permited.
+如游戏名字一样，信条是一个横贯其中的精神内核。`Nothing is ture, everything is permited`.
 
 中文一般翻译为“ 万事皆虚，万事皆允“。
-When other men are limited by morality or law, remember...Everything is permitted. We work in the dark to serve the light. We are Assassin. nothing is true ,everything is permitted. 当其他人都盲目追寻真理的时候，记住，万事皆虚。 当其他人的思想都被法律与道德所束缚的时候，记住，万事皆允。 我们躬耕于黑暗却服侍于光明 万事皆虚，万事皆允。”
+> When other men are limited by morality or law, remember...Everything is permitted. We work in the dark to serve the light. We are Assassin. nothing is true ,everything is permitted. 当其他人都盲目追寻真理的时候，记住，万事皆虚。 当其他人的思想都被法律与道德所束缚的时候，记住，万事皆允。 我们躬耕于黑暗却服侍于光明 万事皆虚，万事皆允。”
 ——信条的格言
 
 刺客的信条（The Creed）是刺客组织的法规和行事哲学，从第三次十字军东征时被创造至现代一直在使用。它禁止对无辜者的无谓杀戮，维护个人和组织的声望，在个人的心中和整个世界上创造和平。
