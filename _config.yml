@@ -44,9 +44,7 @@ navs:
   - 
     href: /about/
     label: 关于
-  -
-    href: /photos/
-    label: 相册
+    
 # ---------------- #
 #      Socials     #
 # ---------------- #
