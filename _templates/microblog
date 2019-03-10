@@ -1,0 +1,10 @@
+---
+layout: microblog
+date: %CURRENT_DATE%
+title: %POST_TITLE%
+comments: true
+--- 
+
+
+
+
