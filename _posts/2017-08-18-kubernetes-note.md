@@ -29,7 +29,7 @@ kubernetes里的API都是声明式,我们描述好自己想要的resource object
 一般包含三部分
 
 * metadata: 元数据
-    * labels: 用于过滤，区分
+    * labels: 用于过滤,区分
     * annotations: 一些元信息.给第工具用来存储和解析原信息用的.
     * namespace: resource所处的namespace
     * name: resource名字
