@@ -20,7 +20,7 @@ permalink: /
         <div class="content-main">
             <div class="post-list">
                 {% assign posts = site.posts | where: "layout", "post" %}
-                {% for post in paginator.posts %}
+                {% for post in posts %}
                 <a href="{{ post.url }}">
                     <div class="post-item">
                         <span class="post-title">{{ post.title }}</span>
