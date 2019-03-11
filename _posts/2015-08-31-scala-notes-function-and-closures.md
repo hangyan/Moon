@@ -3,7 +3,7 @@ layout: post
 title: "Scala笔记: 函数和闭包"
 modified: 2015-08-31
 tags: [scala]
-category: scala
+category: language
 image:
   feature: abstract-10.jpg
 summary: 好难的语言
