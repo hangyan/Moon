@@ -181,6 +181,20 @@
 
 单说书中的描述是不公平的，金庸的一定要算上无数改变的影视作品。她们用另一个方式更加形象化地呈现了古人的生活方式。可以说，很多人对此的认识主要都是来源于此。
 
+![](https://hangyan.github.io/images/assassin/image2.png)
+
+![](https://hangyan.github.io/images/assassin/image3.png)
+
+
+号称历史旅游模拟器的yubi就更不用说了，胡夫金字塔，圣母百花大教堂，伦敦大本钟。。。这些仍然存在于历史
+
+
+![](https://hangyan.github.io/images/assassin/image4.png)
+三列浆战舰
+
+![](https://hangyan.github.io/images/assassin/image4.png)
+胡夫金字塔
+
 
 ## 敲门砖
 二者都算是通俗文化的一部分，金庸武侠本来是在报纸连载，本来就是有很多迎合读者的地方，但也不能说是它不登大雅之堂，在文学性上来看并不弱于很多建国后的文学作品。刺客信条系列是流水线作品，一个底子，每年做些修改。比不上塞尔达或者巫师这样的传奇作品，但是也是一流水准。
