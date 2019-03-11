@@ -5,8 +5,8 @@ permalink: /microblog-feed.xml
 <?xml-stylesheet type="text/css" href="css/feed.css" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>xam.io | Microblog</title>
-    <description>Microblog of Max Kleucker</description>
+    <title>yanhang.me | Microblog</title>
+    <description>Microblog of Hang</description>
     <link>{{ site.url }}</link>
     <atom:link href="{{ site.url }}/microblog.xml" rel="self" type="application/rss+xml" />
     {% for post in site.microblog reversed limit:50 %}
@@ -18,3 +18,4 @@ permalink: /microblog-feed.xml
       </item>
     {% endfor %}
   </channel>
+  </rss>
