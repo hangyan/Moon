@@ -186,13 +186,13 @@
 ![](https://hangyan.github.io/images/assassin/image3.png)
 
 
-号称历史旅游模拟器的yubi就更不用说了，胡夫金字塔，圣母百花大教堂，伦敦大本钟。。。这些仍然存在于历史
+号称历史旅游模拟器的育碧就更不用说了，胡夫金字塔，圣母百花大教堂，伦敦大本钟。。。这些仍然存在于历史
 
 
 ![](https://hangyan.github.io/images/assassin/image4.png)
 三列浆战舰
 
-![](https://hangyan.github.io/images/assassin/image4.png)
+![](https://hangyan.github.io/images/assassin/image5.png)
 胡夫金字塔
 
 
