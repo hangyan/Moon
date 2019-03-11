@@ -12,8 +12,8 @@ BLOG_TITLE := $(title)
 POST_FILE := _microblog/$(POST_DATE)-$(POST_TITLE).md
 BLOG_FILE := _posts/$(POST_DATE)-$(BLOG_TITLE).md
 
-.PHONY: new-microblog
-new-microblog:
+.PHONY: mb
+mb:
 	@cat $(MICROBLOG_TEMPLATE) | \
 	sed "s/%CURRENT_DATE%/$(POST_TIME)/g" | \
 	sed "s/%POST_TITLE%/$(POST_TITLE)/g" > ${POST_FILE} && \
