@@ -1,9 +1,10 @@
 ---
- layout: post
- title: 飞雪连天射白鹿，千军万马避白袍  — 刺客信条与金庸武侠
- date: 2019-03-10
- category: thoughts
- comments: true
+layout: post
+title: 刺客信条与金庸武侠
+date: 2019-03-10
+category: thoughts
+comments: true
+excerpt: 飞雪连天射白鹿，千军万马避白袍
 ---
 
 两个段子

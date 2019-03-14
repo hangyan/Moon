@@ -6,7 +6,7 @@ tags: [scala]
 category: language
 image:
   feature: abstract-10.jpg
-summary: 好难的语言
+excerpt: 好难的语言
 ---
 
 ## Local functions

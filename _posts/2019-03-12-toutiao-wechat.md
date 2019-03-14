@@ -4,6 +4,7 @@ title: 头条的微信该怎么做
 date: 2019-03-12 21:37:39 +0800
 category: thoughts
 comments: true
+excerpt: 讨厌微信的人到底有多少呢
 ---
 首先，多闪是个非常傻逼的产品。原因：
 
