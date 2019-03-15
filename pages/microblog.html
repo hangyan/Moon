@@ -25,7 +25,7 @@ permalink: /microblog/
                         <i>{{ post.content }}</i>
                         <br> 
                         <footer class="microblog-post__footer">
-                            <small><time datetime="{{ post.date | date_to_xmlschema }}"><a href="{{ post.url }}" title="Permalink to Microblog post">{{ post.date | date: "%a, %b %d, %Y at %I:%M%P" }}</a></time></small>
+                            <small><time datetime="{{ post.date | date_to_xmlschema }}"><a href="{{ post.url }}" title="Permalink to Microblog post" style="color:red">{{ post.date | date: "%a, %b %d, %Y at %I:%M%P" }}</a></time></small>
                         </footer>
                       </div>
                       <hr>
