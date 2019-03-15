@@ -2,6 +2,7 @@ highlighter: rouge
 gems: 
     - jekyll-paginate
     - jekyll-redirect-from
+    - jekyll-seo-tag
 encoding: utf-8
 paginate: 8
 paginate_path: "page:num"
