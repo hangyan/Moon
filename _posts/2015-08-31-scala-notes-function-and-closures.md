@@ -8,7 +8,7 @@ image:
   feature: abstract-10.jpg
 excerpt: 好难的语言
 redirect_from:
-  - /scala/scala-notes-function-and-closures/
+    - /scala/scala-notes-function-and-closures/
 ---
 
 ## Local functions
