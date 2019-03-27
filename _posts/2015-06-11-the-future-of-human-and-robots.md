@@ -6,7 +6,7 @@ tags: [philosophy,technology,robot]
 imagefeature:
 comments: true
 share: true
-description: "The feture of human and robots"
+excerpt: "蒸汽朋克/赛博朋克/跨性别"
 thumb: /images/thumbs/robot.png
 ---
 
