@@ -6,7 +6,7 @@ tags: [docker,monitor]
 imagefeature:
 comments: true
 share: true
-description: "multi process managment in docker container"
+excerpt: "remote attach/init/pid namespace"
 ---
 
 容器生来适合的是以单进程为主的独立的微服务架构，而很多传统的组件则是体积庞大，多个进程（组件）之间难以拆分到不同的容器中，所以在单个容器内部署多个组件便成了一种

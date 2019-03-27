@@ -6,7 +6,7 @@ tags: [docker]
 imagefeature:
 comments: true
 share: true
-description: "docker container concepts"
+excerpt: "expose,publish/entrypoint,cmd"
 ---
 
 本篇的主要内容是为了澄清docker容器的一些容易混淆的概念，主要分两部分，
