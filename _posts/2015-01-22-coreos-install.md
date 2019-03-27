@@ -6,7 +6,7 @@ comments: true
 imagefeature:
 tags: [coreos,linux,docker]
 category: tools
-description: "Coreos 安装及配置总结"
+excerpt: "Coreos 安装及配置总结"
 thumb: /images/thumbs/coreos.png
 ---
 

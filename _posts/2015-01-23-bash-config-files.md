@@ -6,7 +6,7 @@ tags: [linux,bash]
 imagefeature:
 comments: true
 share: true
-description: "bash配置文件浅析"
+excerpt: "bash配置文件浅析"
 thumb: /images/thumbs/bash.jpg
 ---
 
