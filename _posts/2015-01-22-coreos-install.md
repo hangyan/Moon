@@ -1,12 +1,12 @@
 ---
 layout: post
-title: Coreos 安装及配置
+title: CoreOS 安装及配置
 share: true
 comments: true
 imagefeature:
 tags: [coreos,linux,docker]
 category: tools
-excerpt: "Coreos 安装及配置总结"
+excerpt: ""
 thumb: /images/thumbs/coreos.png
 ---
 
