@@ -6,7 +6,7 @@ tags: [docker,source,golang]
 imagefeature:
 comments: true
 share: true
-description: "Docker Source Code Reading(3) -- The Starting of Deamon"
+excerpt: "从主函数解析 daemon 进程的启动流程"
 ---
 
 

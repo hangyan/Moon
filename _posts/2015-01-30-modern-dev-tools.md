@@ -6,7 +6,7 @@ tags: [linux,cmd,tools,software]
 imagefeature:
 comments: true
 share: true
-description: "A collection of useful development tools"
+excerpt: "httpi/icdiff/slap..."
 thumb: /images/thumbs/gource.jpg
 ---
 

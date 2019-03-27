@@ -6,7 +6,7 @@ tags: [docker,source,golang]
 imagefeature:
 comments: true
 share: true
-description: "docker image delete"
+excerpt: "详解镜像删除机制"
 ---
 
 
