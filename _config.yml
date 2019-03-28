@@ -3,12 +3,17 @@ gems:
     - jekyll-paginate
     - jekyll-redirect-from
     - jekyll-seo-tag
+    - jekyll-compress-images
 encoding: utf-8
 paginate: 8
 paginate_path: "page:num"
 markdown: kramdown
 kramdown:
   syntax_highlighter: rouge
+
+
+
+  
 
 name: Blog
 bio: Nothing is true
@@ -53,3 +58,7 @@ navs:
 # ---------------- #
 github_id: hangyan
 douban_id: yanhangyhy
+
+
+compress_images:
+  images_path: "/images/**/**/*.{gif,png,jpg,jpeg,svg}"
