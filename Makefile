@@ -20,4 +20,4 @@ mb:
 	code ${POST_FILE}
 blog:
 	@cat $(BLOG_TEMPLATE) | \
-	sed "s/%CURRENT_DATE%/$(POST_TIME)/g" > ${BLOG_FILE} && \
+	sed "s/%CURRENT_DATE%/$(POST_TIME)/g" > ${BLOG_FILE}
