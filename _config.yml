@@ -3,7 +3,6 @@ gems:
     - jekyll-paginate
     - jekyll-redirect-from
     - jekyll-seo-tag
-    - jekyll-compress-images
 encoding: utf-8
 paginate: 8
 paginate_path: "page:num"
@@ -58,7 +57,5 @@ navs:
 # ---------------- #
 github_id: hangyan
 douban_id: yanhangyhy
+steam_id: yayu49
 
-
-compress_images:
-  images_path: "/images/**/**/*.{gif,png,jpg,jpeg,svg}"
