@@ -2,7 +2,7 @@
 layout: post
 title: Emacs is drugs
 date: 2019-03-28 21:06:19 +0800
-category: tools
+category: 技术随笔
 excerpt: 像上瘾的毒药
 comments: true
 ---

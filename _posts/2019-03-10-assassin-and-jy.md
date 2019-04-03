@@ -2,7 +2,7 @@
 layout: post
 title: 刺客信条与金庸武侠
 date: 2019-03-10
-category: thoughts
+category: 游戏
 comments: true
 excerpt: 飞雪连天射白鹿，千军万马避白袍
 ---

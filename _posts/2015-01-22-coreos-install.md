@@ -5,7 +5,7 @@ share: true
 comments: true
 imagefeature:
 tags: [coreos,linux,docker]
-category: tools
+category: 编程工具
 excerpt: ""
 thumb: /images/thumbs/coreos.png
 ---

@@ -2,7 +2,7 @@
 layout: post
 title: 小米之恶
 date: 2019-03-17 21:34:44 +0800
-category: thoughts
+category: 互联网
 excerpt: 
 comments: true
 ---
