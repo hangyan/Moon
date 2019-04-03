@@ -11,10 +11,10 @@ kramdown:
   syntax_highlighter: rouge
 
 
-
+permalink: /:year/:month/:day/:title/
   
 
-name: Blog
+name: Yan
 bio: Nothing is true
 logo: "/logo.png"
 email: hang.yan@hotmail.com
@@ -45,7 +45,7 @@ navs:
   - 
     href: /articles/
     label: 目录
-  -
+  -v
     href: /feed/
     label: 订阅
   - 
