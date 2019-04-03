@@ -11,8 +11,7 @@ kramdown:
   syntax_highlighter: rouge
 
 
-permalink: /:year/:month/:day/:title/
-  
+
 
 name: Yan
 bio: Nothing is true
