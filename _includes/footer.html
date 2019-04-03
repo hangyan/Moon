@@ -1,17 +1,5 @@
-<head>
-    <link href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/css/footer.css">
-</head>
+{% include svg-icons.html %}
 
-<div class="footer">
-    <div class="footer-icon">
-        <a class="fa fa-github fa-lg" href="https://github.com/{{site.github_id}}" target="_blank"></a>
-        <a class="fa fa-book fa-lg" href="https://book.douban.com/people/{{site.douban_id}}" target="_blank"></a>
-        <a class="fa fa-photo fa-lg" href="https://www.douban.com/people/{{site.douban_id}}/photos" target="_blank"></a>
-        <a class="fa fa-steam fa-lg" href="https://steamcommunity.com/id/{{site.steam_id}}/" target="_blank"></a>
-        <a class="fa fa-inbox fa-lg" href="mailto:{{site.email}}" target="_blank"></a>
-    </div>
-    <div class="footer-copyright">
-        &copy; Hang's Tech Blog
-    </div>
-</div>
+{% if site.footer-text %}
+<p>{{ site.footer-text }}</p>
+{% endif %}

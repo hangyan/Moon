@@ -1,47 +1,46 @@
-<!DOCTYPE html>
-<html lang="en">
+---
+layout: default
+---
 
-{% seo %}
+<article class="post">
+  <h1>{{ page.title }}</h1>
 
-<head>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <meta name="theme-color" content="#151515" />
-    <title>{{page.title}}</title>
-    <link rel="stylesheet" type="text/css" href="/css/base.css">
-    <link rel="stylesheet" type="text/css" href="/css/header.css">
-    <link rel="stylesheet" type="text/css" href="/css/post.css">
-    <link rel="stylesheet" type="text/css" href="/css/syntax.css"> {% if page.favicon %}
-    <link rel="icon" href={{page.favicon}}> {% else %}
-    <link rel="icon" href=/assets/img/fav/favicon.png> {% endif %}
+  <div clsss="meta">
+    <span class="date">
+      {{ page.date | date: "%Y-%m-%d" }}
+    </span>
 
-</head>
+    <ul class="tag">
+      {% for tag in page.tags %}
+      <li>
+        <a href="{{ site.url }}{{ site.baseurl }}/tags#{{ tag }}">
+          {{ tag }}
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
 
-<body>
-    <div class="content-wrap">
-        <div class="content-main">
-            <div class="header">
-                <div class="nav-home">
-                    <a href="/">
-                        <span>{{ site.name }}</span>
-                        <img src="{{ site.logo }}" />
-                    </a>
-                </div>
-                <br />
-                <br />
-                <span class="post-title"><center>{{ page.title }}</center></span>
-            </div>
-            <div class="post-content">
-                <div> {{ content }} </div>
-                <br>
-                {% include disqus.html %}
-            </div>
-        </div>
-    </div>
+  <div class="entry">
+    {{ content }}
+  </div>
 
-    
-    {% include footer.html %} 
-    {% include cnzz.html %}
-</body>
+  <div class="pagination">
+    {% if page.previous.url %}
+      <span class="prev" >
+          <a href="{{ site.url }}{{ site.baseurl }}{{ page.previous.url }}">
+            &#xE000; {{ page.previous.title }}
+          </a>
+      </span>
+    {% endif %}
+    {% if page.next.url %}
+      <span class="next" >
+          <a href="{{ site.url }}{{ site.baseurl }}{{ page.next.url }}">
+            {{ page.next.title }} &#xE001;
+          </a>
+      </span>
+    {% endif %}
+  </div>
 
-</html>
+  {% include disqus.html %}
+</article>
