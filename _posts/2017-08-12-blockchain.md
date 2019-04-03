@@ -5,7 +5,7 @@ date: 2017-08-12 16:52
 tags: [decentralized, blockchain, bitcoin]
 excerpt: "比特币,区块链"
 comments: true
-category: topic
+category: 编程
 redirect_from:
     - /2017/08/12/blockchain.html
 ---
