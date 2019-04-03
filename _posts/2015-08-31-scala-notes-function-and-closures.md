@@ -4,6 +4,7 @@ title: "Scala笔记: 函数和闭包"
 modified: 2015-08-31
 tags: [scala]
 category: language
+comments: true
 image:
   feature: abstract-10.jpg
 excerpt: 好难的语言
