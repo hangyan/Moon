@@ -4,7 +4,7 @@ title: CoreOS 安装及配置
 share: true
 comments: true
 imagefeature:
-tags: [os]
+tags: [tools]
 category: 编程
 excerpt: ""
 thumb: /images/thumbs/coreos.png
