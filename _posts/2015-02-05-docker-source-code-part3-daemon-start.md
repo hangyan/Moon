@@ -2,7 +2,7 @@
 layout: post
 title: docker源码分析(3) -- daemon启动流程
 category: docker
-tags: [docker,source,golang]
+tags: [docker]
 imagefeature:
 comments: true
 share: true

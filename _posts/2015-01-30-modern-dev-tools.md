@@ -2,7 +2,7 @@
 layout: post
 title: 现代化的开发人员实用工具
 category: 编程
-tags: [linux,cmd,tools,software]
+tags: [tools]
 imagefeature:
 comments: true
 share: true

@@ -2,7 +2,7 @@
 layout: post
 title: docker源码分析(2) -- 主程序及命令行参数解析
 category: docker
-tags: [docker,source,golang]
+tags: [docker]
 imagefeature:
 comments: true
 share: true
