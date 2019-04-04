@@ -7,5 +7,7 @@ layout: default
 
   <div class="entry">
     {{ content }}
+
+    <small><time datetime="{{ page.date | date_to_xmlschema }}"><a href="{{ page.url }}" title="Permalink to Microblog post">{{ page.date | date: "%a, %b %d, %Y at %I:%M%P" }}</time></a> by Hang Yan</small>
   </div>
 </article>
