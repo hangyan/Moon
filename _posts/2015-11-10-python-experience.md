@@ -3,7 +3,7 @@ layout: post
 title: "一点python的经验"
 modified: 2015-11-10
 tags: [language]
-tags: 编程
+tags: [技术]
 image:
     feature: abstract-12.jpg
 summary: 可能已经过时了。

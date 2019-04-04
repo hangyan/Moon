@@ -1,7 +1,7 @@
 ---
 layout: post
 title: 现代化的开发人员实用工具
-tags: 编程
+tags: [技术]
 imagefeature:
 comments: true
 share: true

@@ -2,7 +2,7 @@
 layout: post
 title: 更安全的 DNS
 date: 2019-04-04 20:56:03 +0800
-tags: 互联网
+tags: 技术
 excerpt: 受信任的 DNS 解析服务器 / DoH /  QNAME minimization
 comments: true
 ---

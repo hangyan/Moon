@@ -3,7 +3,7 @@ layout: post
 title: "Scala笔记: 函数和闭包"
 modified: 2015-08-31
 tags: [language]
-tags: 编程
+tags: [技术]
 comments: true
 image:
   feature: abstract-10.jpg

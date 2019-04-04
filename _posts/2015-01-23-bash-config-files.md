@@ -1,7 +1,7 @@
 ---
 layout: post
 title: bash各配置文件浅析
-tags: 编程
+tags: [技术]
 imagefeature:
 comments: true
 share: true

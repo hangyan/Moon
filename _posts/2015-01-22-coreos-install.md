@@ -5,7 +5,7 @@ share: true
 comments: true
 imagefeature:
 tags: [tools]
-tags: 编程
+tags: [技术]
 excerpt: ""
 thumb: /images/thumbs/coreos.png
 ---
