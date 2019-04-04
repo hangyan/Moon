@@ -1,7 +1,7 @@
 ---
 layout: post
 title: docker容器的一些概念辨析
-category: docker
+tags: docker
 tags: [docker]
 imagefeature:
 comments: true

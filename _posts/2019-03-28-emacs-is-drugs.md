@@ -2,9 +2,10 @@
 layout: post
 title: Emacs is drugs
 date: 2019-03-28 21:06:19 +0800
-category: 技术随笔
+tags: 技术随笔
 excerpt: 像上瘾的毒药
 comments: true
+tag: [技术随笔]
 ---
 
 > 每个程序员都会遇到这一天，他要做一个决定，vim还是emacs,还是IDE。

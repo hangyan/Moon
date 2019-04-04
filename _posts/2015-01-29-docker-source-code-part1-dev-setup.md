@@ -1,7 +1,7 @@
 ---
 layout: post
 title: docker源码分析(1) -- 开发环境准备
-category: docker
+tags: docker
 tags: [docker]
 imagefeature:
 comments: true

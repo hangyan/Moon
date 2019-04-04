@@ -2,7 +2,7 @@
 layout: post
 title: 头条的微信该怎么做
 date: 2019-03-12 21:37:39 +0800
-category: 互联网
+tags: 互联网
 comments: true
 excerpt: 讨厌微信的人到底有多少呢
 ---

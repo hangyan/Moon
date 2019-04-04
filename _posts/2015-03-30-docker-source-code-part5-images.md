@@ -1,7 +1,7 @@
 ---
 layout: post
 title: docker源码分析(5) -- 镜像拉取及存储
-category: docker
+tags: docker
 tags: [docker]
 imagefeature:
 comments: true

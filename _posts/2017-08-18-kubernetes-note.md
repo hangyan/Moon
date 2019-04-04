@@ -5,7 +5,7 @@ date: 2017-08-18
 excerpt: "关于Kubernetes的一些零碎笔记"
 tags: [架构]
 comments: true
-category: 编程
+tags: 编程
 redirect_from:
     - /2017/08/18/kubernetes-note.html
 ---
