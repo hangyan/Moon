@@ -1,27 +1,11 @@
 ---
 layout: default
 ---
- <div class="content-wrap">
-        <div class="content-main">
-            <div class="header">
-                <div class="nav-home">
-                    <a href="/">
-                        <span>{{ site.name }}</span>
-                        <img src="{{ site.logo }}" />
-                    </a>
-                </div>
-                <br />
-                <br />
-            </div>
-            <div class="post-content">
-                <div>{{ page.content }}</div>
-                <br>
-                <br>
-                <hr>
-                
-                <small><time datetime="{{ page.date | date_to_xmlschema }}"><a href="{{ page.url }}" title="Permalink to Microblog post">{{ page.date | date: "%a, %b %d, %Y at %I:%M%P" }}</time></a> by Hang Yan</small>
-                  
-                {% include disqus.html %}
-            </div>
-        </div>
-    </div>
+
+
+<article class="page">
+
+  <div class="entry">
+    {{ content }}
+  </div>
+</article>
