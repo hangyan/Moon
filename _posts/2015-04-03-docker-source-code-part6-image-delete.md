@@ -29,25 +29,25 @@ excerpt: "详解镜像删除机制"
 
 `github.com/docker/docker/api/client/commands.go#CmdRmi`:
 
-{% highlight go  %}
+```go
 var (
     cmd     = cli.Subcmd("rmi", "IMAGE [IMAGE...]", "Remove one or more images")
     force   = cmd.Bool([]string{"f", "-force"}, false, "Force removal of the image")
     noprune = cmd.Bool([]string{"-no-prune"}, false, "Do not delete untagged parents")
 )
-{% endhighlight %}
+```
 
 `force`用来决定是否在有容器使用了此镜像时(非运行状态)强制删除,`noprune`指定不删
 除没有`tag`的`parent layers`.
 
-{% highlight go  %}
+```go
 for _, name := range cmd.Args() {
     body, _, err := readBody(cli.call("DELETE", "/images/"+name+"?"+v.Encode(), nil, false))
     if err != nil {
         fmt.Fprintf(cli.err, "%s\n", err)
         encounteredError = fmt.Errorf("Error: failed to remove one or more images")
     } 
-{% endhighlight %}
+```
 
 `docker rmi`可以接受多个参数,可以从上面代码看到,实际执行时是对每一个`image`都执
 行一个`DELETE`请求并处理返回结果.
@@ -55,19 +55,19 @@ for _, name := range cmd.Args() {
 服务端的`handler`为:
 
 `github.com/docker/docker/api/server/server.go#createRouter`:
-{% highlight go  %}
+```go
 "DELETE": {
     "/containers/{name:.*}": deleteContainers,
     "/images/{name:.*}":     deleteImages,
 },
-{% endhighlight %}
+```
 
 
 ## 请求处理
 
 `deleteImages`的主要工作仍是`job`环境的设置以及参数的传递:
 
-{% highlight go  %}
+```go
 func deleteImages(eng *engine.Engine, version version.Version, w http.ResponseWriter, r *http.Request, vars map[string]string) error {
     if err := parseForm(r); err != nil {
         return err
@@ -82,7 +82,7 @@ func deleteImages(eng *engine.Engine, version version.Version, w http.ResponseWr
 
     return job.Run()
 }
-{% endhighlight %}
+```
 
 `image_delete`对应的`handler`暂时定义在`daemon`包中,后续可能也会移到`graph`包中:
 
@@ -91,7 +91,7 @@ func deleteImages(eng *engine.Engine, version version.Version, w http.ResponseWr
 
 ## 镜像删除
 
-{% highlight go  %}
+```go
 func (daemon *Daemon) ImageDelete(job *engine.Job) engine.Status {
     if n := len(job.Args); n != 1 {
         return job.Errorf("Usage: %s IMAGE", job.Name)
@@ -108,13 +108,13 @@ func (daemon *Daemon) ImageDelete(job *engine.Job) engine.Status {
     }
     return engine.StatusOK
 }
-{% endhighlight %}
+```
 
 
 可以看到，主要的删除是通过`daemon.DeleteImage`函数进行，而`Table`结构体则是用来
 记录删除的结果:
 
-{% highlight go  %}
+```go
 type Table struct {
     Data    []*Env
     sortKey string
@@ -128,7 +128,7 @@ func NewTable(sortKey string, sizeHint int) *Table {
         make(chan *Env),
     }
 }
-{% endhighlight %}
+```
 
 ### 镜像查找
 要删除镜像，就要先获取到关于这个镜像的一些详细信息：名称，`tag`,父子关系等。而输
@@ -136,7 +136,7 @@ func NewTable(sortKey string, sizeHint int) *Table {
 
 `github.com/docker/docker/daemon/image_delete.go#DeleteImage`:
 
-{% highlight go  %}
+```go
 // 解析名字和tag.repoName有可能是镜像ID
 repoName, tag = parsers.ParseRepositoryTag(name)
 if tag == "" {
@@ -158,7 +158,7 @@ if strings.Contains(img.ID, name) {
     repoName = ""
     tag = ""
 }
-{% endhighlight %}
+```
 
 
 ### 父子关系查找
@@ -166,17 +166,17 @@ docker的镜像存储是一个树形结构，每个镜像只有一个父节点�
 点（镜像）。`Graph`并没有提供多少相应的数据结构来进行节点查找，所以只能是遍历查
 询：
 
-{% highlight go  %}
+```go
 byParents, err := daemon.Graph().ByParent()
 if err != nil {
     return err
 }
-{% endhighlight %}
+```
 `ByParent`返回了所有镜像与其子镜像(可为多个)之间的映射关系.
 
 `github.com/docker/docker/graph/graph.go`:
 
-{% highlight go  %}
+```go
 func (graph *Graph) ByParent() (map[string][]*image.Image, error) {
     byParent := make(map[string][]*image.Image)
     err := graph.walkAll(func(img *image.Image) {
@@ -192,7 +192,7 @@ func (graph *Graph) ByParent() (map[string][]*image.Image, error) {
     })
     return byParent, err
 }
-{% endhighlight %}
+```
 
 
 ### 镜像名称与ID关系
@@ -204,12 +204,12 @@ func (graph *Graph) ByParent() (map[string][]*image.Image, error) {
 
 当我们删除镜像时，不管是指定名字还是ID，这样的映射关系也需要提前找出来:
 
-{% highlight go  %}
+```go
 repos := daemon.Repositories().ByID()[img.ID]
-{% endhighlight %}
+```
 
 `github.com/docker/docker/graph/tags.go`:
-{% highlight go  %}
+```go
 func (store *TagStore) LookupImage(name string) (*image.Image, error) {
     // FIXME: standardize on returning nil when the image doesn't exist, and err for everything else
     // (so we can pass all errors here)
@@ -229,7 +229,7 @@ func (store *TagStore) LookupImage(name string) (*image.Image, error) {
     }
     return img, nil
 }
-{% endhighlight %}
+```
 
 最终`repos`的值就是一个 名称:tag 列表.
 
@@ -263,7 +263,7 @@ func (store *TagStore) LookupImage(name string) (*image.Image, error) {
 
 
 `github.com/docker/docker/daemon/image_delete.go#DeleteImage`:
-{% highlight go  %}
+```go
 if repoName == "" {
     for _, repoAndTag := range repos {
         parsedRepo, parsedTag := parsers.ParseRepositoryTag(repoAndTag)
@@ -281,7 +281,7 @@ if repoName == "" {
 } else {
     tags = append(tags, tag)
 }
-{% endhighlight %}
+```
 
 从上面代码可以看到，当输入为`image id`时,如果`name:[tag]`有多个，只会将第一个的信息清除掉,
 其他的都跳过了，未做处理。
@@ -293,15 +293,15 @@ if repoName == "" {
 只用考虑这几种情况即可:
 
 `github.com/docker/docker/daemon/image_delete.go#DeleteImage`:
-{% highlight go  %}
+```go
 if len(repos) <= 1 {
     if err := daemon.canDeleteImage(img.ID, force); err != nil {
         return err
     }
 }
-{% endhighlight %}
+```
 
-{% highlight go  %}
+```go
 func (daemon *Daemon) canDeleteImage(imgID string, force bool) error {
     // 返回容器列表
     for _, container := range daemon.List() {
@@ -331,7 +331,7 @@ func (daemon *Daemon) canDeleteImage(imgID string, force bool) error {
     }
     return nil
 }
-{% endhighlight %}
+```
 
 从上面也可以看到`force`参数的作用:当有容器在使用这个镜像但并未运行时，`force`可
 以强制删除镜像。
@@ -344,7 +344,7 @@ func (daemon *Daemon) canDeleteImage(imgID string, force bool) error {
 
 真正的删除分两步。第一步：`untag`,删除相关`tag`信息:
 
-{% highlight go  %}
+```go
 for _, tag := range tags {
     tagDeleted, err := daemon.Repositories().Delete(repoName, tag)
     if err != nil {
@@ -357,7 +357,7 @@ for _, tag := range tags {
         eng.Job("log", "untag", img.ID, "").Run()
     }
 }
-{% endhighlight %}
+```
 
 `daemon.Repositories().Delete`即是从`TagStore`中删除相关信息.
 
@@ -365,7 +365,7 @@ for _, tag := range tags {
 
 第二步： 删除实际镜像数据，这一步并不一定会执行。
 
-{% highlight go  %}
+```go
 tags = daemon.Repositories().ByID()[img.ID]
 if (len(tags) <= 1 && repoName == "") || len(tags) == 0 {
     if len(byParents[img.ID]) == 0 {
@@ -389,7 +389,7 @@ if (len(tags) <= 1 && repoName == "") || len(tags) == 0 {
 
     }
 }
-{% endhighlight %}
+```
 
 这时候的`tags`已经是清楚过一个`repo`之后的了，有可能为空，也有可能有其他的值（这
 时候就不能删除镜像数据）。`len(tags) <= 1 && repoName == ""`是应对原本就没有
@@ -398,7 +398,7 @@ if (len(tags) <= 1 && repoName == "") || len(tags) == 0 {
 真正的数据删除是在`daemon.Graph().Delete()`:
 
 `github.com/docker/docker/graph/graph.go`:
-{% highlight go  %}
+```go
 func (graph *Graph) Delete(name string) error {
     id, err := graph.idIndex.Get(name)
     if err != nil {
@@ -422,7 +422,7 @@ func (graph *Graph) Delete(name string) error {
     // Remove the trashed image directory
     return os.RemoveAll(tmp)
 }
-{% endhighlight %}
+```
 
 `/var/lib/docker/graph`和`/var/lib/docker/aufs/`下的相关目录都会被清除.
 

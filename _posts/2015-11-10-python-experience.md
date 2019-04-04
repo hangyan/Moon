@@ -21,7 +21,7 @@ summary: 可能已经过时了。
 所以可以考虑对所有函数的返回值进行一个封装，对上层调用者提供一个统一的判断逻辑。
 下面是一个示例:
 
-{% highlight python  %}
+```python
 def fail(msg, err_code=error.ERR_DATA_NOT_EXIST):
     return {
         'suc': False,
@@ -35,7 +35,7 @@ def suc(data=None):
         'suc': True,
         'data': data
     }
-{% endhighlight %}
+```
 
 
 函数调用者在拿到返回值后只需判断 `result['suc']`的真假即可知道函数执行的情况。对
@@ -49,7 +49,7 @@ def suc(data=None):
 用代码会显得非常混乱。使用上面的`suc/fail`封装后，可以将所有的异常捕获并以错误码
 的形式返回，上层代码会显得更加具有一致性,示例如下:
 
-{% highlight python  %}
+```python
 def _do_req(self, module, action, params):
     try:
         service = Api(module, self.config)
@@ -61,7 +61,7 @@ def _do_req(self, module, action, params):
         return suc(resp)
     except Exception, e:
         return fail(e.message, err_code=error.ERR_NETWORK_EXCEPTION)
-{% endhighlight %}
+```
 
 这段代码需要处理两种情况,一种是网络异常,通过`fail`将其转化为错误码和错误信息。另
 一种是成功调用但是response里面也有错误码,也可以用`fail`自己进行处理。调用者只需
@@ -70,25 +70,25 @@ def _do_req(self, module, action, params):
 
 ### 日志
 很多时候我们希望既能返回错误信息也能同时将其打印到日志中,最简单的方式如下:
-{% highlight python  %}
+```python
 msg = "error message"
 LOG.error(msg)
 return fail(msg, error_code)
-{% endhighlight %}
+```
 
 这样写有点累赘，可以将其写成一个单独的函数:
-{% highlight python  %}
+```python
 def log_fail(logger, msg, err_code=error.ERR_DATA_NOT_EXIST):
     logger.error(msg)
     return fail(msg, err_code=err_code)
-{% endhighlight %}
+```
 
 这样每次只用将`logger`实例和`msg`传给`log_fail`即可。
 
 Update:
 这种方式并不是很好，最终显示调用logger的位置是不对的，需要一点hack才能正确地显示打日志的位置:
 
-{% highlight python  %}
+```python
 class CallerLog(logging.Logger):
     def _error(self, msg, fn, lno, func, *args, **kwargs):
         if self.isEnabledFor(logging.ERROR):
@@ -122,7 +122,7 @@ def log_fail(msg, code=ERR_DATA_NOT_EXIST):
     log._error(msg, caller.filename, caller.lineno, caller.function)
     return fail(msg, code=code)
 
-{% endhighlight %}
+```
 
 
 
@@ -171,7 +171,7 @@ python 有一个[colorlog](https://github.com/borntyping/python-colorlog)库支�
 
 formatters:
 
-{% highlight python  %}
+```python
 'formatters': {
     'standard': {
         'format': '%(asctime)s [%(levelname)s][%(threadName)s]' +
@@ -185,10 +185,10 @@ formatters:
                   "%(blue)s%(message)s"
     }
 },
-{% endhighlight %}
+```
 
 handlers:
-{% highlight python  %}
+```python
     'color': {
         'level': 'DEBUG',
         'class': 'logging.handlers.RotatingFileHandler',
@@ -197,12 +197,12 @@ handlers:
         'backupCount': 5,
         'formatter': 'color',
     },
-{% endhighlight %}
+```
 
 其中`SplitColoredformatter`是我自己重写的一个`formatter`,用来支持我上面所说的描
 述和数据分离的格式:
 
-{% highlight python  %}
+```python
 class SplitColoredFormatter(ColoredFormatter):
     def format(self, record):
         """Format a message from a record object."""
@@ -233,7 +233,7 @@ class SplitColoredFormatter(ColoredFormatter):
             message = desc + '|' + data
 
         return message
-{% endhighlight %}
+```
 
 最终出来的效果如下图所示:
 

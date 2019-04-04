@@ -20,15 +20,15 @@ excerpt: "从主函数解析 daemon 进程的启动流程"
 
 在`mainDaemon`的开始处，在确认参数解析无误后,首先便生成了一个`Engine`的实例:
 
-{% highlight go %}
+```go
 eng := engine.New()
 signal.Trap(eng.Shutdown)
-{% endhighlight %}
+```
 
 `Engine`可以说是`docker`的核心。它用来执行`docker`的各种操作(统一为`job`的形式)，
 管理`container`的存储。其结构定义为 ：
 
-{% highlight go %}
+```go
 type Engine struct {
 	handlers   map[string]Handler
 	catchall   Handler
@@ -43,7 +43,7 @@ type Engine struct {
 	shutdown   bool
 	onShutdown []func() // shutdown handlers
 }
-{% endhighlight %}
+```
 
 大部分均可见名知意，下面对部分字段进行详细解析。
 
@@ -53,9 +53,9 @@ type Engine struct {
 能的`handler`，比如关于网络设置的、`web server`、版本等等，然后就可以通过名字调用进行
 初始化:
 
-{% highlight go %}
+```go
 type Handler func(*Job) Status
-{% endhighlight go%}
+```
 
 各个模块在初始化时只要设置好相应环境变量并注册一个`job`即可。统一的函数接口能够
 让`docker`内部各组件在代码结构和执行流程上更加清晰一致。
@@ -65,7 +65,7 @@ type Handler func(*Job) Status
 `container`,在`container`内部执行一个程序，从网络`pull`一个镜像等等，都可以用
 `job`来表示。
 
-{% highlight go %}
+```go
 type Job struct {
 	Eng     *Engine
 	Name    string
@@ -79,16 +79,16 @@ type Job struct {
 	end     time.Time
 	closeIO bool
 }
-{%  endhighlight %}
+```
 
 
-{% highlight go %}
+```go
 const (
 	StatusOK       Status = 0
 	StatusErr      Status = 1
 	StatusNotFound Status = 127
 )
-{% endhighlight %}
+```
 
 
 从结构体的定义来看，`job`与`unix`上的进程的结构表示非常类似：名字、参数、环境变
@@ -99,7 +99,7 @@ const (
 
 `New`函数用来初始化一个`Engine`,基本上只是对各变量进行简单的初始化:
 
-{% highlight go %}
+```go
 func New() *Engine {
     eng := &Engine{
         handlers: make(map[string]Handler),
@@ -121,7 +121,7 @@ func New() *Engine {
     }
     return eng
 }
-{% endhighlight %}
+```
 
 注意点:
 
@@ -151,17 +151,17 @@ func New() *Engine {
 
 # Builtins
 
-{% highlight go %}
+```go
 if err := builtins.Register(eng); err != nil {
     log.Fatal(err)
 }
-{% endhighlight %}
+```
 
 
 `builtins`包主要用来给`Engine`注册一些内部使用的`handlers` : 网络设置、
 `apiserver`、`Events`设置和`version`信息 :
 
-{% highlight go %}
+```go
 func Register(eng *engine.Engine) error {
     if err := daemon(eng); err != nil {
         return err
@@ -178,7 +178,7 @@ func Register(eng *engine.Engine) error {
 
     return nil
 }
-{% endhighlight %}
+```
 
 
 因为只是注册,具体的执行还在后面，所以这里暂时不深入探讨各个`handler`的详细内容，
@@ -196,7 +196,7 @@ version            |  dockerVersion
 因为`dockerVersion`的实现比较简单，所以就直接写在了
 `github.com/docker/docker/builtins/builtins.go`里面:
 
-{% highlight go %}
+```go
 func dockerVersion(job *engine.Job) engine.Status {
     v := &engine.Env{}
     v.SetJson("Version", dockerversion.VERSION)
@@ -213,7 +213,7 @@ func dockerVersion(job *engine.Job) engine.Status {
     }
     return engine.StatusOK
 }
-{% endhighlight %}
+```
 
 我们可以直接通过执行`docker version`命令来查看其大概效果:
 
@@ -232,7 +232,7 @@ func dockerVersion(job *engine.Job) engine.Status {
 可见`Events`是类似于log的一种东西，不过是一种结构化的记录方式，而且只记录特定的
 运行时信息。
 
-{% highlight go %}
+```go
 const eventsLimit = 64
 
 type listener chan<- *utils.JSONMessage
@@ -248,11 +248,11 @@ func New() *Events {
         events: make([]*utils.JSONMessage, 0, eventsLimit),
     }
 }
-{% endhighlight %}
+```
 
 而前面提到的`events.New().Install(eng)`也是向`Engine`注册了一些`handlers`:
 
-{% highlight go %}
+```go
 func (e *Events) Install(eng *engine.Engine) error {
     // Here you should describe public interface
     jobs := map[string]engine.Handler{
@@ -267,27 +267,27 @@ func (e *Events) Install(eng *engine.Engine) error {
     }
     return nil
 }
-{% endhighlight %}
+```
 
 具体的函数实现则不再赘述。
 
 
 # Registry
-{% highlight go %}
+```go
 if err := registry.NewService(daemonCfg.InsecureRegistries).Install(eng); err != nil {
     log.Fatal(err)
 }
-{% endhighlight %}
+```
 
 `registry`主要是给`Engine`提供认证和搜索官方(`dockerhub`)镜像的能力：
 
-{% highlight go %}
+```go
 func (s *Service) Install(eng *engine.Engine) error {
     eng.Register("auth", s.Auth)
     eng.Register("search", s.Search)
     return nil
 }
-{% endhighlight %}
+```
 
 
 如代码所示，`Registry`注册了`auth`和`search`两个`handler`。
@@ -298,7 +298,7 @@ func (s *Service) Install(eng *engine.Engine) error {
 经过前面的那么多设置,`Engine`算是配置的差不多了，下面就是对`daemon`进行各项配置
 的时候了:
 
-{% highlight go %}
+```go
 go func() {
     d, err := daemon.NewDaemon(daemonCfg, eng)
     if err != nil {
@@ -323,7 +323,7 @@ go func() {
         log.Fatal(err)
     }
 }()
-{% endhighlight %}
+```
 
 主要内容如下:
 
@@ -346,7 +346,7 @@ go func() {
 
 `Config`定义了`docker daemon`的各项配置:
 
-{% highlight go %}
+```go
 type Config struct {
 	Pidfile                     string
 	Root                        string
@@ -373,10 +373,10 @@ type Config struct {
 	TrustKeyPath                string
 	Labels                      []string
 }
-{% endhighlight %}
+```
 
 
-{% highlight go %}
+```go
 type Daemon struct {
 	ID             string
 	repository     string
@@ -395,7 +395,7 @@ type Daemon struct {
 	execDriver     execdriver.Driver
 	trustStore     *trust.TrustStore
 }
-{% endhighlight %}
+```
 
 
 
@@ -426,7 +426,7 @@ type Daemon struct {
 
 - `pidfile`的创建和管理
 
-{% highlight go %}
+```go
 if config.Pidfile != "" {
   if err := utils.CreatePidFile(config.Pidfile); err != nil {
     return nil, err
@@ -436,14 +436,14 @@ if config.Pidfile != "" {
     utils.RemovePidFile(config.Pidfile)
   })
 }
-{% endhighlight %}
+```
 
    使用`pid`文件可以说是`linux`上大多数`daemon`服务的一种通用模式了: 没有则创建，
    并且在程序退出时删除(通过`shutdown handler`来处理)。
 
 - 操作系统及内核版本检测,要求linux 3.8以上的kernel.
 
-{% highlight go %}
+```go
 if runtime.GOOS != "linux" {
   return nil, fmt.Errorf("The Docker daemon is only supported on linux")
 }
@@ -451,27 +451,27 @@ if runtime.GOOS != "linux" {
 if err := checkKernelAndArch(); err != nil {
   return nil, err
 }
-{% endhighlight %}
+```
 
 -  权限检测,`docker`需要`root`权限运行
 
-{% highlight go %}
+```go
 if os.Geteuid() != 0 {
   return nil, fmt.Errorf("The Docker daemon needs to be run as root")
 }
-{% endhighlight %}
+```
 
 
 -  `TempDir`设置
 
 这里的`TempDir`是相对于`docker`的目录而言的,并不是指系统的`/tmp`目录。从参数设置
 上可以看到默认的根目录为`/var/lib/docker`:
-{% highlight go %}
+```go
 flag.StringVar(&config.Root, []string{"g", "-graph"}, "/var/lib/docker", "Path to use as the root of the Docker runtime")
-{% endhighlight %}
+```
 
 如果使用默认值，则`TempDir`为`/var/lib/docker/tmp`：
-{% highlight go  %}
+```go
 func TempDir(rootDir string) (string, error) {
     var tmpDir string
     if tmpDir = os.Getenv("DOCKER_TMPDIR"); tmpDir == "" {
@@ -480,7 +480,7 @@ func TempDir(rootDir string) (string, error) {
     err := os.MkdirAll(tmpDir, 0700)
     return tmpDir, err
 }
-{% endhighlight %}
+```
 
 
 
@@ -489,11 +489,11 @@ func TempDir(rootDir string) (string, error) {
 检测是否开启`SELinux`支持。`SELinux`和`Apparmor`是docker支持的两种安全机制，`SELinux`功能强大，架构也比较复
 杂，`AppArmor`则相反。
 
-{% highlight go  %}
+```go
 if !config.EnableSelinuxSupport {
 	selinuxSetDisabled()
 }
-{% endhighlight %}
+```
 
 - Docker root directory
 
@@ -505,7 +505,7 @@ if !config.EnableSelinuxSupport {
 相关。比如`ubuntu`上默认使用的是`AUFS`,`Centos`上是`devicemapper`,`Coreos`上则是`btrfs`。
 `graph driver`定义了一个统一的、抽象的接口,以一种可扩展的方式对各文件系统提供了支持。
 
-{% highlight go %}
+```go
 
 // Set the default driver
 graphdriver.DefaultDriver = config.GraphDriver
@@ -517,12 +517,12 @@ if err != nil {
 }
 log.Debugf("Using graph driver %s", driver)
 
-{% endhighlight %}
+```
 
 因为`config.GraphDriver`并没有设置(没有供用户指定的参数选项)，所以`graphDriver`会从其支持的文件系统列表中
 一个一个检测系统是否支持,找到一个支持的即设为要用的driver :
 
-{% highlight go %}
+```go
 for _, name := range priority {
   driver, err = GetDriver(name, root, options)
   if err != nil {
@@ -533,11 +533,11 @@ for _, name := range priority {
   }
   return driver, nil
 }
-{% endhighlight %}
+```
 
 `priority`列表为:
 
-{% highlight go %}
+```go
 priority = []string{
 	"aufs",
 	"btrfs",
@@ -546,15 +546,15 @@ priority = []string{
 	// experimental, has to be enabled manually for now
 	"overlay",
 }
-{% endhighlight %}
+```
 
 如果使用的是`btrfs`,因为其与`SELinux`的不兼容，所以还要进行一些检测:
 
-{% highlight go  %}
+```go
 if selinuxEnabled() && config.EnableSelinuxSupport && driver.String() == "btrfs" {
     return nil, fmt.Errorf("SELinux is not supported with the BTRFS graph driver!")
 }
-{% endhighlight %}
+```
 
 之后检测`/var/lib/docker/containers`目录是否存在，不存在则创建。我们来看看
 `containers`目录下的内容：
@@ -569,23 +569,23 @@ if selinuxEnabled() && config.EnableSelinuxSupport && driver.String() == "btrfs"
 
 
 ### graph
-{% highlight go  %}
+```go
 g, err := graph.NewGraph(path.Join(config.Root, "graph"), driver)
 if err != nil {
   return nil, err
 }
-{% endhighlight %}
+```
 
 
 `Graph`是用来存储标记的文件系统镜像以及他们之间的关系的组件:
 
-{% highlight go  %}
+```go
 type Graph struct {
 	Root    string
 	idIndex *truncindex.TruncIndex
 	driver  graphdriver.Driver
 }
-{% endhighlight %}
+```
 
 其中`idIndex`的作用是使我们可以使用长id的前缀来检索镜像,`Root`为`Graph`的根目录，一般为`/var/lib/docker/graph`。`NewGraph`即是用此目
 录下的文件来重建镜像索引。我们可以查看此目录下的目录的结构:
@@ -611,7 +611,7 @@ type Graph struct {
 `container`的生命周期分离开来，在`container`被删去之后能继续存在。在实现上，使用
 的依然是只读层和读写层结合(`union file system`)的方式。
 
-{% highlight go  %}
+```go
 volumesDriver, err := graphdriver.GetDriver("vfs", config.Root, config.GraphOptions)
 if err != nil {
     return nil, err
@@ -621,7 +621,7 @@ volumes, err := volumes.NewRepository(path.Join(config.Root, "volumes"), volumes
 if err != nil {
     return nil, err
 }
-{% endhighlight %}
+```
 
 `VFS`是一个中间层,下面是个各种文件系统实现，对外提供的则是统一的访问接口,这非常
 类似我们之前提到的`GraphDriver`的机制。刚开始看这段代码很难知道它是干嘛用的，但我们还可以
@@ -656,12 +656,12 @@ if err != nil {
 
 
 ### repository
-{% highlight go  %}
+```go
 repositories, err := graph.NewTagStore(path.Join(config.Root, "repositories-"+driver.String()), g, config.Mirrors, config.InsecureRegistries)
 if err != nil {
     return nil, fmt.Errorf("Couldn't create Tag store: %s", err)
 }
-{% endhighlight %}
+```
 
 我们依然先来查看下相关的文件: `/var/lib/docker/repositories-aufs` :
 
@@ -670,7 +670,7 @@ if err != nil {
 整个json文件记录了所有的镜像的不同的tag及其对应的id.从函数名`NewTagStore`上也可
 以看出，`tag`信息的记录是其主要功能之一。
 
-{% highlight go  %}
+```go
 type TagStore struct {
 	path               string
 	graph              *Graph
@@ -683,7 +683,7 @@ type TagStore struct {
 	pullingPool map[string]chan struct{}
 	pushingPool map[string]chan struct{}
 }
-{% endhighlight %}
+```
 
 `pullingPool`记录有哪些镜像正在被下载，若某一个镜像正在被下载，则驳回其他`Docker
 Client`发起下载该镜像的请求。`pushingPool`记录有哪些镜像正在被上传，若某一个镜像
@@ -692,7 +692,7 @@ Client`发起下载该镜像的请求。`pushingPool`记录有哪些镜像正在
 
 ### trust
 
-{% highlight go  %}
+```go
 trustDir := path.Join(config.Root, "trust")
 if err := os.MkdirAll(trustDir, 0700); err != nil && !os.IsExist(err) {
 	return nil, err
@@ -701,7 +701,7 @@ t, err := trust.NewTrustStore(trustDir)
 if err != nil {
 	return nil, fmt.Errorf("could not create trust store: %s", err)
 }
-{% endhighlight %}
+```
 
 还是先看`/var/lib/docker/trust`下的内容:
 
@@ -709,13 +709,13 @@ if err != nil {
 
 跟认证签名有关的一些信息。这个文件是从下面这个地方获取到的:
 
-{% highlight go  %}
+```go
 var baseEndpoints = map[string]string{"official": "https://dvjy3tqbc323p.cloudfront.net/trust/official.json"}
-{% endhighlight %}
+```
 
 然后用其中的内容来初始化`TrustStore`:
 
-{% highlight go  %}
+```go
 type TrustStore struct {
 	path          string
 	caPool        *x509.CertPool
@@ -729,12 +729,12 @@ type TrustStore struct {
 
 	sync.RWMutex
 }
-{% endhighlight %}
+```
 
 
 ### init_networkdriver
 
-{% highlight go  %}
+```go
 if !config.DisableNetwork {
     job := eng.Job("init_networkdriver")
 
@@ -751,7 +751,7 @@ if !config.DisableNetwork {
         return nil, err
     }
 }
-{% endhighlight %}
+```
 
 前面提到在`Builtins`里注册了这个`handler`，这里就利用启动参数进行了相关环境变
 量的设置并真正开始启动这个Job。主要内容如下:
@@ -766,7 +766,7 @@ if !config.DisableNetwork {
    围。
 
 4. 注册了一些供以后进行各个容器的网络设置的`handlers`:
-{% highlight go  %}
+```go
 for name, f := range map[string]engine.Handler{
     "allocate_interface": Allocate,
     "release_interface":  Release,
@@ -778,19 +778,19 @@ for name, f := range map[string]engine.Handler{
     }
 }
 
-{% endhighlight %}
+```
 
 
 
 ### linkgraph.db
-{% highlight go  %}
+```go
 graphdbPath := path.Join(config.Root, "linkgraph.db")
 graph, err := graphdb.NewSqliteConn(graphdbPath)
 if err != nil {
     return nil, err
 }
 
-{% endhighlight %}
+```
 
 `/var/lib/docker/linkgraph.db`是一个SQLITE3的数据库文件。里面有两个表: `edge` 和
 `entity`(两个图理论中常用的概念)。查看其内容:
@@ -806,13 +806,13 @@ if err != nil {
 
 ### execdriver
 
-{% highlight go  %}
+```go
 sysInfo := sysinfo.New(false)
 ed, err := execdrivers.NewDriver(config.ExecDriver, config.Root, sysInitPath, sysInfo)
 if err != nil {
 	return nil, err
 }
-{% endhighlight %}
+```
 
 `docker`最开始使用的是`linux`的`lxc`作为其底层的容器执行引擎，后来自己开发了
 `libcontainer`，用来替代`lxc`，所以我们现在看到`docker info`里显示的`Excution
@@ -822,17 +822,17 @@ Driver`是`native`:
 
 `sysinfo`是`cgroup`相关的一些系统信息，`lxc exec driver`初始化时需要从其中获取关于系统中`apparmor`的一些信息，但`native exec driver`不需要。
 
-{% highlight go  %}
+```go
 type SysInfo struct {
 	MemoryLimit            bool
 	SwapLimit              bool
 	IPv4ForwardingDisabled bool
 	AppArmor               bool
 }
-{% endhighlight %}
+```
 
 
-{% highlight go  %}
+```go
 func NewDriver(name, root, initPath string, sysInfo *sysinfo.SysInfo) (execdriver.Driver, error) {
     switch name {
     case "lxc":
@@ -842,7 +842,7 @@ func NewDriver(name, root, initPath string, sysInfo *sysinfo.SysInfo) (execdrive
     }
     return nil, fmt.Errorf("unknown exec driver %s", name)
 }
-{% endhighlight %}
+```
 
 看看代码中提到的目录`/var/lib/docker/execdriver/native`:
 
@@ -871,7 +871,7 @@ func NewDriver(name, root, initPath string, sysInfo *sysinfo.SysInfo) (execdrive
 ## Restore
 经过前面各个组件的设置及初始化，终于到了`daemon`的创建了：
 
-{% highlight go  %}
+```go
 daemon := &Daemon{
     ID:             trustKey.PublicKey().KeyID(),
     repository:     daemonRepo,
@@ -893,7 +893,7 @@ daemon := &Daemon{
 if err := daemon.restore(); err != nil {
     return nil, err
 }
-{% endhighlight %}
+```
 
 基本上用到了我们前面设置好的各个组件。之后的`restore`便开始加载原有的`container`，
 将设为自启动的`container`启动。
@@ -903,7 +903,7 @@ if err := daemon.restore(); err != nil {
 
 前面提到过`Engine`在关闭时会调用各个注册好的`handlers`,这里便是一个:
 
-{% highlight go  %}
+```go
 eng.OnShutdown(func() {
     if err := daemon.shutdown(); err != nil {
         log.Errorf("daemon.shutdown(): %s", err)
@@ -918,13 +918,13 @@ eng.OnShutdown(func() {
         log.Errorf("daemon.containerGraph.Close(): %s", err.Error())
     }
 })
-{% endhighlight %}
+```
 
 
 主要进行`daemon`自身的清理工作，端口的释放，挂载点的卸载,与`graphdb`连接的关闭。
 
 # ServeApi
-{% highlight go  %}
+```go
 job := eng.Job("serveapi", flHosts...)
 job.SetenvBool("Logging", true)
 job.SetenvBool("EnableCors", *flEnableCors)
@@ -940,7 +940,7 @@ job.SetenvBool("BufferRequests", true)
 if err := job.Run(); err != nil {
     log.Fatal(err)
 }
-{% endhighlight %}
+```
 
 
 查看之前在`Builtins`中注册的`handlers`表，可知`serveapi`对应的是

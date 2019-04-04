@@ -29,7 +29,7 @@ description: "docker images pulling and store"
 解析执行,代码如下:
 
 
-{% highlight go  %}
+```go
 if err := cli.Cmd(flag.Args()...); err != nil {
     if sterr, ok := err.(*utils.StatusError); ok {
         if sterr.Status != "" {
@@ -39,7 +39,7 @@ if err := cli.Cmd(flag.Args()...); err != nil {
     }
     log.Fatal(err)
 }
-{% endhighlight %}
+```
 
 比如我在命令行下敲下`docker pull ubuntu`这个命令，那么在`Cmd`函数中，首先要做的
 便是找到与`pull`相对应的`handler`.在这里并不是像一般的做法那样通过提前注册好的
@@ -47,7 +47,7 @@ if err := cli.Cmd(flag.Args()...); err != nil {
 的叫`CmdPush`,规则就是首字母大写并且加上一个`Cmd`前缀.
 
 `github.com/docker/docker/api/client/cli.go`:
-{% highlight go  %}
+```go
 func (cli *DockerCli) getMethod(args ...string) (func(...string) error, bool) {
     camelArgs := make([]string, len(args))
     for i, s := range args {
@@ -63,7 +63,7 @@ func (cli *DockerCli) getMethod(args ...string) (func(...string) error, bool) {
     }
     return method.Interface().(func(...string) error), true
 }
-{% endhighlight %}
+```
 
 
 所以我们可以在`github.com/docker/docker/api/client/commands.go`文件中见到很多个
@@ -86,7 +86,7 @@ func (cli *DockerCli) getMethod(args ...string) (func(...string) error, bool) {
 和`name`,`tag`.不过了解了其结构之后，解析的代码就显得简单多了，不再具
 体分析.
 
-{% highlight go  %}
+```go
 taglessRemote, tag := parsers.ParseRepositoryTag(remote)
 if tag == "" && !*allTags {
     newRemote = taglessRemote + ":" + graph.DEFAULTTAG
@@ -95,7 +95,7 @@ if tag == "" && !*allTags {
 if tag != "" && *allTags {
     return fmt.Errorf("tag can't be used with --all-tags/-a")
 }
-{% endhighlight %}
+```
 
 注意其中的`DEFAULTTAG`，其值为`latest`,所以如果我们`pull`镜像时没有指定`tag`并且
 `--all-tags`为`false`，则只会拉取`tag`为`latest`的镜像。
@@ -104,7 +104,7 @@ if tag != "" && *allTags {
 参数中的`hostname`部分需要单独解析出来，因为有安全认证的考虑.需要读取相关的配置
 文件，并解析参数，最终要作为`http header`中的参数发送出去.
 
-{% highlight go  %}
+```go
 hostname, _, err := registry.ResolveRepositoryName(taglessRemote)
 if err != nil {
 	return err
@@ -113,7 +113,7 @@ if err != nil {
 cli.LoadConfigFile()
 
 authConfig := cli.configFile.ResolveAuthConfig(hostname)
-{% endhighlight %}
+```
 
 需要注意的是,如果参数中没有指定`hostname`，则默认是从官方仓库拉取镜像,其值由变量
 `INDEXSERVER`定义: `https://index.docker.io/v1/`。
@@ -122,7 +122,7 @@ authConfig := cli.configFile.ResolveAuthConfig(hostname)
 参数解析好之后，便可以执行`http`请求了。`docker pull`所发起的是`POST`请求,地址为
 `/iamges/create`:
 
-{% highlight go  %}
+```go
 v  = url.Values{}
 
 v.Set("fromImage", newRemote)
@@ -144,7 +144,7 @@ pull := func(authConfig registry.AuthConfig) error {
 if err := pull(authConfig); err != nil {
     ...
 }
-{% endhighlight %}
+```
 
 在`web server`端，我们可以查到`/images/create`所对应的`handler`名称。
 
@@ -160,7 +160,7 @@ if err := pull(authConfig); err != nil {
 之前提到过，`daemon`将各种操作统一为`job`的形式，镜像的创建也不例外。所以`postImageCreate`
 的主要工作即是进行`job`的相关环境的设定：
 
-{% highlight go  %}
+```go
 image = r.Form.Get("fromImage")
 repo  = r.Form.Get("repo")
 tag   = r.Form.Get("tag")
@@ -181,7 +181,7 @@ if image != "" { //pull
     job.SetenvJson("metaHeaders", metaHeaders)
     job.SetenvJson("authConfig", authConfig)
 }
-{% endhighlight %}
+```
 
 
 需要注意的是,`postImageCreate`对应了两个`subcommand`，分别是`pull`和`import`,都
@@ -205,7 +205,7 @@ if image != "" { //pull
 拉取了，需要等待。这就是`CmdPull`最开始做的事情：确保只有一个`client`在拉取同一
 个镜像:
 
-{% highlight go  %}
+```go
 c, err := s.poolAdd("pull", localName+":"+tag)
 if err != nil {
     if c != nil {
@@ -216,7 +216,7 @@ if err != nil {
     return job.Error(err)
 }
 defer s.poolRemove("pull", localName+":"+tag)
-{% endhighlight %}
+```
 
 `pollAdd`可以对`pull`和`push`两个过程进行检测(通过第一个参数),然后通过一个`map`
 确认是否已经有`client`在拉取第二个参数标识的镜像。
@@ -226,7 +226,7 @@ defer s.poolRemove("pull", localName+":"+tag)
 `CmdPull`传入的参数有两个:`image`和`tag`。`image`是包含仓库地址的，我们需要在拉取
 之前将其解析出来，建立连接,并对镜像名做进一步规范化处理:
 
-{% highlight go  %}
+```go
 hostname, remoteName, err := registry.ResolveRepositoryName(localName)
 
 endpoint, err := registry.NewEndpoint(hostname, s.insecureRegistries)
@@ -243,13 +243,13 @@ if endpoint.VersionString(1) == registry.IndexServerAddress() {
 
     mirrors = s.mirrors
 }
-{% endhighlight %}
+```
 
 注意`remoteName`和`localName`的区别。我们在拉取镜像时会发现有的镜像没有命名空间,
 其实它是有一个默认值`library`。`remote`就是带了命名空间的规范化镜像名称.
 
 ### Registry API 版本
-{% highlight go  %}
+```go
 if len(mirrors) == 0 && (isOfficial || endpoint.Version == registry.APIVersion2) {
     j := job.Eng.Job("trust_update_base")
     if err = j.Run(); err != nil {
@@ -269,7 +269,7 @@ if len(mirrors) == 0 && (isOfficial || endpoint.Version == registry.APIVersion2)
 if err = s.pullRepository(r, job.Stdout, localName, remoteName, tag, sf, job.GetenvBool("parallel"), mirrors); err != nil {
     return job.Error(err)
 }
-{% endhighlight %}
+```
 
 从代码中可以看到有两种拉取，分别对应于仓库的两个API（V1和V2)版本。V2是一种较新的架构，改
 动较大,具体可见本文后面的链接。下面简要介绍一下官方仓库的拉取流程(示例):
@@ -310,7 +310,7 @@ V1和V2的区分即是再`registry`这一层。我们使用私有仓库的时候
 `tag`的信息,另外就是单个的`tag`，不管是自己指定的还是默认的`latest`。
 
 `github.com/docker/docker/graph/pull.go#pullV2Repository`:
-{% highlight go  %}
+```go
 tags, err := r.GetV2RemoteTags(remoteName, nil)
 if err != nil {
     return err
@@ -322,7 +322,7 @@ for _, t := range tags {
         layersDownloaded = true
     }
 }
-{% endhighlight %}
+```
 
 上面代码展示的便是要拉取所有`tag`的情况，用的仍是标准的`REST
 API`,`GetV2RemoteTags`便是一个标准的go语言的`GET`方法实现，不在详述。
@@ -345,7 +345,7 @@ API`,`GetV2RemoteTags`便是一个标准的go语言的`GET`方法实现，不在
 
 先看下`MainfestData`的定义:
 
-{% highlight go  %}
+```go
 type ManifestData struct {
     Name          string             `json:"name"`
     Tag           string             `json:"tag"`
@@ -354,7 +354,7 @@ type ManifestData struct {
     History       []*ManifestHistory `json:"history"`
     SchemaVersion int                `json:"schemaVersion"`
 }
-{% endhighlight %}
+```
 
 在命令行下之下用`httpie`获取`centos:5`的`manifest`信息如下:
 
@@ -377,18 +377,18 @@ type ManifestData struct {
 
 `github.com/docker/docker/graph/pull.go#pullV2Tag`:
 
-{% highlight go  %}
+```go
 log.Debugf("Pulling tag from V2 registry: %q", tag)
 manifestBytes, err := r.GetV2ImageManifest(remoteName, tag, nil)
 // 验证各项信息是否正确
 manifest, verified, err := s.verifyManifest(eng, manifestBytes)
 
 downloads := make([]downloadInfo, len(manifest.FSLayers))
-{% endhighlight %}
+```
 
 
 
-{% highlight go  %}
+```go
 type downloadInfo struct {
     imgJSON    []byte
     img        *image.Image
@@ -397,13 +397,13 @@ type downloadInfo struct {
     downloaded bool
     err        chan error
 }
-{% endhighlight %}
+```
 
 
 `downloadInfo`里最主要的信息便是镜像的`json`描述文件,也是从`ManifestData`中获取
 的。`tmpFile`的类型为`*os.File`,表明真正的下载要开始了。
 
-{% highlight go  %}
+```go
 for i := len(manifest.FSLayers) - 1; i >= 0; i-- {
     var (
         sumStr  = manifest.FSLayers[i].BlobSum
@@ -415,7 +415,7 @@ for i := len(manifest.FSLayers) - 1; i >= 0; i-- {
         return false, fmt.Errorf("failed to parse json: %s", err)
     }
     downloads[i].img = img
-{% endhighlight %}
+```
 
 
 ### 下载
@@ -424,12 +424,12 @@ for i := len(manifest.FSLayers) - 1; i >= 0; i-- {
 
 (1). 确认此镜像(`layer`)的`ID`是否已经存在:
 
-{% highlight go  %}
+```go
 if s.graph.Exists(img.ID) {
     log.Debugf("Image already exists: %s", img.ID)
     continue
 }
-{% endhighlight %}
+```
 
 如果已经存在，表示本地已有此镜像，跳过。
 
@@ -439,7 +439,7 @@ if s.graph.Exists(img.ID) {
 是共享的，所以如果我们同时在拉取两个不同的镜像，其各自的`layers`可能会有重叠的部
 分，所以在每层`layer`拉取之前都要检测:
 
-{% highlight go  %}
+```go
 if c, err := s.poolAdd("pull", "img:"+img.ID); err != nil {
     if c != nil {
         out.Write(sf.FormatProgress(utils.TruncateID(img.ID), "Layer already being pulled by another client. Waiting.", nil))
@@ -449,10 +449,10 @@ if c, err := s.poolAdd("pull", "img:"+img.ID); err != nil {
         log.Debugf("Image (id: %s) pull is already running, skipping: %v", img.ID, err)
     }
 } 
-{% endhighlight %}
+```
 
 (3). 下载
-{% highlight go  %}
+```go
 // 本地文件名
 tmpFile, err := ioutil.TempFile("", "GetV2ImageBlob")
 if err != nil {
@@ -466,7 +466,7 @@ if err != nil {
 }
 defer r.Close()
 io.Copy(tmpFile, utils.ProgressReader(r, int(l), out, sf, false, utils.TruncateID(img.ID), "Downloading"))
-{% endhighlight %}
+```
 
 
 `docker`有自己的临时目录，一般是`/var/lib/docker/tmp/`，里面都是这种
@@ -480,7 +480,7 @@ io.Copy(tmpFile, utils.ProgressReader(r, int(l), out, sf, false, utils.TruncateI
 
 在之前的`CmdPull` `job`中,有一个`parallel`的参数,它用来控制下载时各`layer`之间是否是并行下载:
 
-{% highlight go  %}
+```go
 if parallel {
     downloads[i].err = make(chan error)
     go func(di *downloadInfo) {
@@ -492,7 +492,7 @@ if parallel {
         return false, err
     }
 }
-{% endhighlight %}
+```
 
 `docker`版本`1.3`以上的都是并行下载。
 
@@ -504,7 +504,7 @@ if parallel {
 中我们提到的`graph`就是起这个作用。`daemon`启动时会创建一个`Graph`实例用来管理镜像,我们新下载的镜像也需要
 向其“报到”，以纳入整个镜像关系网(树)中。
 
-{% highlight go  %}
+```go
 if d.tmpFile != nil {
     err = s.graph.Register(d.img,
         utils.ProgressReader(d.tmpFile, int(d.length), out, sf, false, utils.TruncateID(d.img.ID), "Extracting"))
@@ -512,34 +512,34 @@ if d.tmpFile != nil {
         return false, err
     }
 }
-{% endhighlight %}
+```
 
 所以我们需要先探究以下`Graph`的具体构造。
 
 ### Graph
-{% highlight go  %}
+```go
 type Graph struct {
     Root    string
     idIndex *truncindex.TruncIndex
     driver  graphdriver.Driver
 }
-{% endhighlight %}
+```
 
 三个字段:根目录,索引,底层`driver`.`TruncIndex`的作用是使我们可以用长ID的前缀来检索镜像:
 
-{% highlight go  %}
+```go
 type TruncIndex struct {
     sync.RWMutex
     trie *patricia.Trie
     ids  map[string]struct{}
 }
-{% endhighlight %}
+```
 
 `patricia`是一个基数树的`golang`实现。具体可参见[go-patricia](https://github.com/tchap/go-patricia).
 
 Dirver则定义了一组抽象的文件系统接口:
 
-{% highlight go  %}
+```go
 type Driver interface {
     ProtoDriver
     // Diff produces an archive of the changes between the specified
@@ -557,10 +557,10 @@ type Driver interface {
     // relative to its base filesystem directory.
     DiffSize(id, parent string) (bytes int64, err error)
 }
-{% endhighlight %}
+```
 
 `PhotoDriver`则定义了一个`driver`的基本功能集：
-{% highlight go  %}
+```go
 type ProtoDriver interface {
     // String returns a string representation of this driver.
     String() string
@@ -587,7 +587,7 @@ type ProtoDriver interface {
     // known to this driver.
     Cleanup() error
 }
-{% endhighlight %}
+```
 
 
 
@@ -603,17 +603,17 @@ type ProtoDriver interface {
 
 #### 1. ID验证
 
-{% highlight go  %}
+```go
 if err := utils.ValidateID(img.ID); err != nil {
     return err
 }
-{% endhighlight %}
+```
 
 用正则表达式检验其是否包含非法字符,规则是只能包含英语字母和数字
 
 #### 2. 检查是否已经存在
 
-{% highlight go  %}
+```go
 if graph.Exists(img.ID) {
     return fmt.Errorf("Image %s already exists", img.ID)
 }
@@ -623,7 +623,7 @@ if err := os.RemoveAll(graph.ImageRoot(img.ID)); err != nil && !os.IsNotExist(er
 }
 
 graph.driver.Remove(img.ID)
-{% endhighlight %}
+```
 
 之所以要这么多步删除是为了应对一些特殊情况，比如切换`graph driver`等，这时候就可
 能信息不一致的地方。
@@ -632,23 +632,23 @@ graph.driver.Remove(img.ID)
 到这一步就牵扯到了具体的`graph driver`实现了，`ubuntu`上现在都是`aufs`,下面就以
 `aufs`为例探讨。
 
-{% highlight go  %}
+```go
 if err := graph.driver.Create(img.ID, img.Parent); err != nil {
 	return fmt.Errorf("Driver %s failed to create image rootfs %s: %s", graph.driver, img.ID, err)
 }
-{% endhighlight %}
+```
 
 首先，创建`mnt`和`diff`两个目录(在`/var/lib/docker/aufs`下):
 
 `github.com/docker/docker/daemon/graphdriver/aufs/aufs.go#Create`:
-{% highlight go  %}
+```go
 if err := a.createDirsFor(id); err != nil {
 	return err
 }
-{% endhighlight %}
+```
 
 `github.com/docker/docker/daemon/graphdriver/aufs/aufs.go#createDirsFor`:
-{% highlight go  %}
+```go
 func (a *Driver) createDirsFor(id string) error {
     paths := []string{
         "mnt",
@@ -662,12 +662,12 @@ func (a *Driver) createDirsFor(id string) error {
     }
     return nil
 }
-{% endhighlight %}
+```
 
 然后，创建`layers`目录，里面记录了镜像之间的层级关系:
 
 `github.com/docker/docker/daemon/graphdriver/aufs/aufs.go#Create`:
-{% highlight go  %}
+```go
 f, err := os.Create(path.Join(a.rootPath(), "layers", id))
 if err != nil {
     return err
@@ -688,7 +688,7 @@ if parent != "" {
         }
     }
 }
-{% endhighlight %}
+```
 
 我们可以在`/var/lib/docker/aufs/layers`目录下找一个文件看一下其中的内容:
 ![ ][11]
@@ -699,19 +699,19 @@ if parent != "" {
 
 #### 4. 解压数据,计算layersize
 `github.com/docker/docker/graph/graph.go#Register`:
-{% highlight go  %}
+```go
 img.SetGraph(graph)
 if err := image.StoreImage(img, layerData, tmp); err != nil {
 	return err
 }
-{% endhighlight %}
+```
 
 `tmp`即是`/var/lib/docker/graph/_tmp`，用来暂时存储数据。
 
 首先，解压数据，并存入`/var/lib/docker/diff`中:
 
 `github.com/docker/docker/image/image.go#StoreImage`:
-{% highlight go  %}
+```go
 layerDataDecompressed, err := archive.DecompressStream(layerData)
 
 if layerTarSum, err = tarsum.NewTarSum(layerDataDecompressed, true, tarsum.VersionDev); err != nil {
@@ -721,7 +721,7 @@ if layerTarSum, err = tarsum.NewTarSum(layerDataDecompressed, true, tarsum.Versi
 if size, err = driver.ApplyDiff(img.ID, img.Parent, layerTarSum); err != nil {
     return err
 }
-{% endhighlight %}
+```
 
 实际的数据解压存储实在`driver.ApplyDiff`中执行的,`aufs`的实现中是不需要`parent
 image id`的，所以较为简单,只用简单地解压数据并计算大小即可:
@@ -729,7 +729,7 @@ image id`的，所以较为简单,只用简单地解压数据并计算大小即�
 
 `github.com/docker/daemon/graphdriver/aufs/aufs.go`:
 
-{% highlight go  %}
+```go
 func (a *Driver) ApplyDiff(id, parent string, diff archive.ArchiveReader) (bytes int64, err error) {
     // AUFS doesn't need the parent id to apply the diff.
     if err = a.applyDiff(id, diff); err != nil {
@@ -738,38 +738,38 @@ func (a *Driver) ApplyDiff(id, parent string, diff archive.ArchiveReader) (bytes
 
     return a.DiffSize(id, parent)
 }
-{% endhighlight %}
+```
 
-{% highlight go  %}
+```go
 // 解压数据
 func (a *Driver) applyDiff(id string, diff archive.ArchiveReader) error {
     return chrootarchive.Untar(diff, path.Join(a.rootPath(), "diff", id), nil)
 }
-{% endhighlight %}
+```
 
-{% highlight go  %}
+```go
 // 遍历目录计算大小
 func (a *Driver) DiffSize(id, parent string) (bytes int64, err error) {
     // AUFS doesn't need the parent layer to calculate the diff size.
     return utils.TreeSize(path.Join(a.rootPath(), "diff", id))
 }
-{% endhighlight %}
+```
 
 
 计算好的大小会暂时存在`/var/lib/docker/graph/_tmp/<ID>/layersize`文件中:
 
 `github.com/docker/docker/image/image.go#StoreImage`:
 
-{% highlight go  %}
+```go
 img.Size = size
 if err := img.SaveSize(root); err != nil {
     return err
 }
-{% endhighlight %}
+```
 
 同样的,`json`描述文件也会暂时存在`/var/lib/docker/graph/_tmp/<ID>/json`中:
 
-{% highlight go  %}
+```go
 f, err := os.OpenFile(jsonPath(root), os.O_CREATE|os.O_WRONLY|os.O_TRUNC, os.FileMode(0600))
 if err != nil {
     return err
@@ -778,35 +778,35 @@ if err != nil {
 defer f.Close()
 
 return json.NewEncoder(f).Encode(img)
-{% endhighlight %}
+```
 
 
 在整个流程中也包含了校验码的对比验证:
 
 `github.com/docker/docker/image/image.go#StoreImage`:
-{% highlight go  %}
+```go
 checksum := layerTarSum.Sum(nil)
 
 if img.Checksum != "" && img.Checksum != checksum {
     log.Warnf("image layer checksum mismatch: computed %q, expected %q", checksum, img.Checksum)
 }
-{% endhighlight %}
+```
 
 `image.StoreImage`结束后，将`_tmp`下的数据移到正式的目录里面:
 
 `github.com/docker/docker/graph/graph.go#Register`:
-{% highlight go  %}
+```go
 if err := os.Rename(tmp, graph.ImageRoot(img.ID)); err != nil {
     return err
 }
-{% endhighlight %}
+```
 
 #### 5. 将镜像ID加入索引
 
 `github.com/docker/docker/graph/graph.go#Register`:
-{% highlight go  %}
+```go
 graph.idIndex.Add(img.ID)
-{% endhighlight %}
+```
 
 即前面所说的`TruncIndex`中。
 
@@ -817,7 +817,7 @@ graph.idIndex.Add(img.ID)
 ID(`d0955f21bf24`)关联起来的数据结构，这就是`TagStore`：
 
 `github.com/docker/docker/graph/tags.go`
-{% highlight go  %}
+```go
 type TagStore struct {
     path               string
     graph              *Graph
@@ -833,7 +833,7 @@ type TagStore struct {
 
 type Repository map[string]string
 
-{% endhighlight %}
+```
 
 在[Daemon启动流程中](http://hangyan.github.io/docker/docker-source-code-part3-daemon-start/)
 中已经提到,`TagStore`的数据存在`/var/lib/docker/graph/repositories-<driver-name>`中，对`aufs`来说，就是
@@ -846,11 +846,11 @@ type Repository map[string]string
 
 `github.com/docker/docker/graph/pull.go#pullV2Tag`:
 
-{% highlight go  %}
+```go
 if err = s.Set(localName, tag, downloads[0].img.ID, true); err != nil {
     return false, err
 }
-{% endhighlight %}
+```
 
 
 `localname`是没有进行过命名空间规整的镜像名（即不会有额外的`library/`）。
@@ -860,18 +860,18 @@ if err = s.Set(localName, tag, downloads[0].img.ID, true); err != nil {
 首先获取这个镜像的`Image`对象:
 
 `github.com/docker/docker/graph/tags.go#Set`:
-{% highlight go  %}
+```go
 img, err := store.LookupImage(imageName)
 store.Lock()
 defer store.Unlock()
 if err != nil {
     return err
 }
-{% endhighlight %}
+```
 
 如果在`TagStore`中找不到的话会到`Graph`中寻找:
 `github.com/docker/docker/graph/tags.go#LookupImage`:
-{% highlight go  %}
+```go
 img, err := store.GetImage(repos, tag)
 store.Lock()
 defer store.Unlock()
@@ -883,12 +883,12 @@ if err != nil {
     }
 }
 return img,nil
-{% endhighlight %}
+```
 
 之后便是对`repoName`和`tag`的校验,最后将相关信息写入`TagStore`的
 `Repositories`(`map`)中。
 
-{% highlight go  %}
+```go
 if err := store.reload(); err != nil {
     return err
 }
@@ -904,7 +904,7 @@ if r, exists := store.Repositories[repoName]; exists {
 }
 repo[tag] = img.ID
 return store.save()
-{% endhighlight %}
+```
 
 
 ## 总结

@@ -20,7 +20,7 @@ Java 的主要解决方式是通过`private method`,scala也支持这种。但�
 域仅限于外部函数内部。
 
 
-{% highlight scala  %}
+```scala
 import scala.io.Source
 
 object LongLines {
@@ -37,7 +37,7 @@ object LongLines {
       processLine(line)
   }
 }
-{% endhighlight %}
+```
 
 内部函数的一个便利之处就是它可以直接访问外部函数的变量(参数)。
 
@@ -50,28 +50,28 @@ object LongLines {
 scala里有`function literal`和`function value`两个概念，有点像是`class`和
 `object`之间的区别，前者都是在代码层级上而言，后者是运行时的概念。例如:
 
-{% highlight scala  %}
+```scala
 (x: Int) => x + 1
-{% endhighlight %}
+```
 
 这是一个`fucntion literal`。你可以把它赋给一个变量并且调用它:
 
-{% highlight go  %}
+```go
 var increase = (x: Int) => x + 1
 increase(10)
 increase = (x: Int) => x + 9999
 increase(10)
-{% endhighlight %}
+```
 
 简单的函数一行即可描述，多行的用`{}`包起来即可。
 
 scala标准库里有一个常用的`foreach`函数，它就是以一个函数为参数并且将其应用到
 `collections`的各个元素之上的:
 
-{% highlight scala  %}
+```scala
 val someNumbers = List(-11, -10, -5, 0, 5, 10)
 someNumbers.foreach((x: Int) => println(x))
-{% endhighlight %}
+```
 
 
 `foreach`函数的参数即事一个`fcuntion literal`
@@ -82,43 +82,43 @@ scala代码看起来难懂就在于它提供了好多简化代码的方式，就
 自己推导出`function literal`的参数类型,比如在一个`List[String]`上操作，那么类型
 自然就是`String`。简化过后可以写作:
 
-{% highlight scala  %}
+```scala
 scala> val someNumbers = List(-11, -10, -5, 0, 5, 10)
 someNumbers: List[Int] = List(-11, -10, -5, 0, 5, 10)
 scala> someNumbers.filter((x) => x > 0)
 res5: List[Int] = List(5, 10)
-{% endhighlight %}
+```
 
 再进一步，我们可以将参数外面的括号去掉，因为外面已经有一层括号了，里面这个就显得
 有点多余了:
 
-{% highlight scala  %}
+```scala
 scala> someNumbers.filter(x => x > 0)
 res6: List[Int] = List(5, 10)
-{% endhighlight %}
+```
 
 ## Placeholder
 
 继续简化。上例中的`x`只用了一次，完全可以省略掉，只要能表示出有一个从 List 中取
 出的数来参与比较即可:
 
-{% highlight scala  %}
+```scala
 scala> someNumbers.filter(_ > 0)
 res7: List[Int] = List(5, 10)
-{% endhighlight %}
+```
 
 这种占位符(`Placeholder`)语法在很多语言中都出现过，比如`python`。再看下面一个用
 法:
 
-{% highlight scala  %}
+```scala
 someNumbers.foreach(println _)
-{% endhighlight %}
+```
 
 它和下面这种形式的含义完全一样:
 
-{% highlight scala  %}
+```scala
 someNumbers.foreach(x => println(x))
-{% endhighlight %}
+```
 
 注意在这里占位符其实代替了整个参数列表，因为它不会有引起任何混淆。
 
@@ -127,25 +127,25 @@ someNumbers.foreach(x => println(x))
 的支持。以一个具有多个参数的函数来蓝本，我们可以通过提供不同数量的部分参数来创造
 出不同的函数。示例如下:
 
-{% highlight scala %}
+```scala
 scala> def sum(a: Int, b: Int, c: Int) = a + b + c
 sum: (a: Int,b: Int,c: Int)Int
 
 scala> sum(1, 2, 3)
 res10: Int = 6
-{% endhighlight %}
+```
 
 这是正常函数的调用流程。如果我们提供给 sum 两个个参数，我们就创造出了一个只需要
 一个个参数的 sum 函数:
 
 
-{% highlight scala  %}
+```scala
 scala> val b = sum(1, _: Int, 3)
 b: (Int) => Int = <function1>
 
 scala> b(2)
 res13: Int = 6
-{% endhighlight %}
+```
 
 
 ## Closures
@@ -156,7 +156,7 @@ res13: Int = 6
 就容易引起混淆了。这就是闭包的作用所在：它能将函数创建时的一部分环境封装起来，将
 函数所需要的外部变量和其绑定在一起，以便其内部使用。看一个例子:
 
-{% highlight scala  %}
+```scala
 scala> var more = 1
 more: Int = 1
 scala> val addMore = (x: Int) => x + more
@@ -167,7 +167,7 @@ scala> more = 9999
 more: Int = 9999
 scala> addMore(10)
 res18: Int = 10009
-{% endhighlight %}
+```
 
 `addMore` 的执行需要一个外部的`more`变量，它会自动在其外部环境里找到这个变量并使
 用。需要注意的是，`more`的值改变时，函数是可以感知到其变化的。
@@ -177,7 +177,7 @@ res18: Int = 10009
 ### Repeated parameters
 直接看例子:
 
-{% highlight scala  %}
+```scala
 scala> def echo(args: String*) =
          for (arg <- args) println(arg)
 echo: (args: String*)Unit
@@ -189,12 +189,12 @@ one
 scala> echo("hello", "world!")
 hello
 world!
-{% endhighlight %}
+```
 
 函数的最后一个参数可以是变长的一个参数列表,使用时将其当做一个列表处理即可。需要
 注意的是，函数调用时不能直接传一个列表过去，必须是将列表中的元素一个一个传进去:
 
-{% highlight scala  %}
+```scala
 scala> val arr = Array("What's", "up", "doc?")
 arr: Array[java.lang.String] = Array(What's, up, doc?)
 
@@ -208,7 +208,7 @@ scala> echo(arr: _*)
 What's
 up
 doc?
-{% endhighlight %}
+```
 
 ### Named arguments and Default parameter values
 
@@ -217,14 +217,14 @@ doc?
 
 默认参数和命名参数经常是结合起来使用的:
 
-{% highlight scala  %}
+```scala
 def printTime2(out: java.io.PrintStream = Console.out,
                  divisor: Int = 1) =
    out.println("time = "+ System.currentTimeMillis()/divisor)
 
 printTime2(out = Console.err)
 printTime2(divisor = 1000)
-{% endhighlight %}
+```
 
 如果没有命名参数，想要在第一个参数为默认而第二个参数明确指定基本上是做不到的。
 
@@ -233,7 +233,7 @@ printTime2(divisor = 1000)
 起来更加优雅简单，但是会带来性能的损耗。尾递归便是对其的一种优化，使其能达到和
 `while`循环等类似结构同样的性能.
 
-{% highlight scala  %}
+```scala
 def approximate(guess: Double): Double =
   if (isGoodEnough(guess)) guess
   else approximate(improve(guess))
@@ -244,7 +244,7 @@ def approximateLoop(initialGuess: Double): Double = {
     guess = improve(guess)
   guess
 }
-{% endhighlight %}
+```
 
 注意上面的递归函数是在函数的最后一行调用自身，编译器可以将这种调用直接跳回到函数
 开始处（更新参数后），省去存储各层函数堆栈的麻烦。最终编译器会对两种形式生成同样

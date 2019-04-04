@@ -107,7 +107,7 @@ flLogLevel    = flag.String([]string{"l", "-log-level"}, "info", "Set the loggin
 
 `github.com/docker/docker/pkg/mflag/flag.go` :
 
-{% highlight go %}
+```go
  type FlagSet struct {
 	 Usage func()
 	 name          string
@@ -118,7 +118,7 @@ flLogLevel    = flag.String([]string{"l", "-log-level"}, "info", "Set the loggin
 	 errorHandling ErrorHandling
 	 output        io.Writer 
 }
-{% endhighlight %}
+```
 
 1. `Usage` : 见名知意，可知是用来输出`help`信息的。一般是在没输入参数或者参数出错
    的时候使用
@@ -134,21 +134,21 @@ flLogLevel    = flag.String([]string{"l", "-log-level"}, "info", "Set the loggin
 
 `github.com/docker/docker/pkg/mflag/flag.go` :
 
-{% highlight go %}
+```go
  type Flag struct {
 	 Names    []string // name as it appears on command line
 	 Usage    string   // help message
 	 Value    Value    // value as set
 	 DefValue string   // default value (as text); for usage message
  }
-{% endhighlight %}
+```
 
 定义简单明了，`Names`为`string`列表是因为很多参数既有长类型也有短类型，两个名字
 都存下来。还有一些个别的情况时将要废弃的参数形式，比如:
 
-{% highlight go %}
+```go
  flEnableCors  = flag.Bool([]string{"#api-enable-cors", "-api-enable-cors"}, false, "Enable CORS headers in the remote API")
-{% endhighlight %}
+```
 其名字前有一个`#`符号。在解析时如果遇到这类参数，会输出一些警告信息 :
 
 `github.com/docker/docker/pkg/mflag/flag.go#parseOne()` :
@@ -202,7 +202,7 @@ func (f *FlagSet) Bool(names []string, value bool, usage string) *bool {
 个地址，即参数的值。前面说过在解析过程中会动态更新参数的值，用指针既可保证
 `flDaemon`指向的是最后实际解析出来的值。
 
-{% highlight go %}
+```go
 func BoolVar(p *bool, names []string, value bool, usage string) {
 	CommandLine.Var(newBoolValue(value, p), names, usage)
 }
@@ -213,23 +213,23 @@ func newBoolValue(val bool, p *bool) *boolValue {
 	*p = val
 	return (*boolValue)(p)
 }
-{% endhighlight %}
+```
 
 type定义了一个新的类型`boolValue`,可以猜想处理`string`会有`stringValue`,处理`in`会有`intValue`...它们都实现了`Value`接口:
 
-{% highlight go %}
+```go
 type Value interface {
 	String() string
 	Set(string) error
 }
-{% endhighlight %}
+```
 
 `Value`是用于动态存储位于`Flag`中的值的接口.想想看,在最开始解析命令行参数时,我们需要对不同的类型作分别处理,有了统一的`Value`接口,
 后续的处理就可以统一进行,不用对每种类型都定义处理函数.
 
 以`int`为例,其`intValue`各接口定义如下:
 
-{% highlight go %}
+```go
 type intValue int
 
 func newIntValue(val int, p *int) *intValue {
@@ -247,20 +247,20 @@ func (i *intValue) Get() interface{} { return int(*i) }
 
 func (i *intValue) String() string { return fmt.Sprintf("%v", *i) }
 
-{% endhighlight %}
+```
 
 其他类型与此类似，稍有不同的是`bool`类型。因为`bool`类型的参数通常并不需要明确地
 指明其值，只要参数出现，即可认为为`true`。比如`-d`参数,并不需要写`-d=true`。针对
 这种情况,`boolValue`提供了额外的`IsBoolFlag()`函数和`boolFlag` interface.
 
-{% highlight go %}
+```go
 func (b *boolValue) IsBoolFlag() bool { return true }
 
 type boolFlag interface {
 	Value
 	IsBoolFlag() bool
 }
-{% endhighlight %}
+```
 
 
 再回到原来的处理流程，看看最终的`Var`函数的实现 :
@@ -296,11 +296,11 @@ func (f *FlagSet) Var(value Value, names []string, usage string) {
 
 ## 解析过程
 
-{% highlight go %}
+```go
 func Parse() {
 	CommandLine.Parse(os.Args[1:])
 }
-{% endhighlight %}
+```
 
 
 解析过程和设定过程一样都是由`CommandLine`变量来执行的，`Parse`直接读取全部参数
@@ -315,7 +315,7 @@ func Parse() {
 
 1. 先判断是不是一个flag
 
-{% highlight go %}
+```go
 if len(f.args) == 0 {
 	return false, "", nil
 }
@@ -332,7 +332,7 @@ if len(name) == 0 || name[0] == '=' {
 	return false, "", f.failf("bad flag syntax: %s", s)
 }
 
-{% endhighlight %}
+```
 
 
 `len(f.args) == 0` 一般代表解析的终止,没有更多的参数了，结合上述`Parse`函数中的
@@ -347,7 +347,7 @@ if len(name) == 0 || name[0] == '=' {
 个参数。如果`args[0]`是形如`--debug=false`的格式，便需从中取出相应的`name`和
 `value`：
 
-{% highlight go %}
+```go
 f.args = f.args[1:]
 has_value := false
 value := ""
@@ -356,12 +356,12 @@ if i := strings.Index(name, "="); i != -1 {
 	has_value = true
 	name = name[:i]
 }
-{% endhighlight %}
+```
 
 有了`name`和`value`后，便可以与之前存在`f.formal`中的参数列表相对照,看其是否属于
 程序所支持的参数:
 
-{% highlight go %}
+```go
 flag, alreadythere := m[name] // BUG
 if !alreadythere {
 	if name == "-help" || name == "help" || name == "h" { 
@@ -375,7 +375,7 @@ if !alreadythere {
 }
 
 
-{% endhighlight %}
+```
 
 
 前面提到过`CommandLine`的`errorHandling`是`ErrorOnExit`，碰到错误会直接退出。如
@@ -388,7 +388,7 @@ if !alreadythere {
 
 之后需要对`bool`类型的参数做特殊处理，原因前已详述:
 
-{% highlight go %}
+```go
 if fv, ok := flag.Value.(boolFlag); ok && fv.IsBoolFlag() { 
 	if has_value {
 		if err := fv.Set(value); err != nil {
@@ -398,11 +398,11 @@ if fv, ok := flag.Value.(boolFlag); ok && fv.IsBoolFlag() {
 		fv.Set("true") //默认为true
 	}
 }
-{% endhighlight %}
+```
 
 对于其他的类型，则必须解析到其值:
 
-{% highlight go %}
+```go
 else {
 	// It must have a value, which might be the next argument.
 	if !has_value && len(f.args) > 0 {
@@ -417,7 +417,7 @@ else {
 		return false, "", f.failf("invalid value %q for flag -%s: %v", value, name, err)
 	}
 }
-{% endhighlight %}
+```
 
 一般情况下都是以`args`列表中的下一个字符串为其值。至此，一个参数解析流程将结束，
 后面只要不断重复此过程即可，除了需要对将要废弃的参数打印一些警告信息。当处理结束
@@ -431,25 +431,25 @@ else {
 除了参数解析，整个`main`函数的其他部分就是比较简单地用解析到的值设置各个组件，理解了前者之后，后面的部分就没有什么难点了。
 
 ## 版本号
-{% highlight go %}
+```go
 if *flVersion {
 	showVersion()
 	return
 }
-{% endhighlight %}
+```
 
 代码其实没什么好说的，这里主要想提及的是`docker`里设置版本号的方式。在`docker`根
 目录下会有一个`VERSION`文件，里面记录了程序的版本号，然后在编译脚本中会读取其内
 容来进行设置:
 
 `github.com/docker/docker/hack/make.sh` :
-{% highlight bash %}
+```bash
 VERSION=$(cat ./VERSION)
-{% endhighlight %}
+```
 
 ## 日志级别
 
-{% highlight go %}
+```go
 if *flLogLevel != "" {
 	lvl, err := log.ParseLevel(*flLogLevel)
 	if err != nil {
@@ -464,13 +464,13 @@ if *flDebug {
 	os.Setenv("DEBUG", "1")
 	initLogging(log.DebugLevel)
 }
-{% endhighlight %}
+```
 
 有两个设置日志的参数 : `--log-level` 和 `--debug`，后者只是为了方便使用，且优先级更高。
 	
 
 ## sockets
-{% highlight go %}
+```go
 if len(flHosts) == 0 {
 	defaultHost := os.Getenv("DOCKER_HOST")
 	if defaultHost == "" || *flDaemon {
@@ -483,7 +483,7 @@ if len(flHosts) == 0 {
 	}
 	flHosts = append(flHosts, defaultHost)
 }
-{% endhighlight %}
+```
 
 `docker daemon`可以监听三种类型的`socket` :
 
@@ -505,12 +505,12 @@ if len(flHosts) == 0 {
 
 ## daemon
 
-{% highlight go %}
+```go
 if *flDaemon {
 	mainDaemon()
 	return
 }
-{% endhighlight %}
+```
 
 `docker`并不像`redis`等程序那样分为`server`和`client`程序，区别即在这里。如果有`-d`参
 数，就以`daemon`方式启动，没有，就当做是`client.`,然后继续解析子命令及其参数进行
@@ -533,7 +533,7 @@ if *flDaemon {
 
 ## DockerCli
 
-{% highlight go %}
+```go
 
 protoAddrParts := strings.SplitN(flHosts[0], "://", 2)
 
@@ -543,12 +543,12 @@ if *flTls || *flTlsVerify {
 	cli = client.NewDockerCli(os.Stdin, os.Stdout, os.Stderr, nil, protoAddrParts[0], protoAddrParts[1], nil)
 }
 
-{% endhighlight %}
+```
 
 ## 子命令
 最后一部分便是`docker client`子命令的解析与执行，比如`doker ps`,`docker stop <id>`等等。具体细节就留待以后解析了。
 
-{% highlight go %}
+```go
 if err := cli.Cmd(flag.Args()...); err != nil {
 	if sterr, ok := err.(*utils.StatusError); ok {
 		if sterr.Status != "" {
@@ -558,7 +558,7 @@ if err := cli.Cmd(flag.Args()...); err != nil {
 	}
 	log.Fatal(err)
 }
-{% endhighlight %}
+```
 
 
 

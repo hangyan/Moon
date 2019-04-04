@@ -60,7 +60,7 @@ description: "docker network setttings"
 这些参数由命令行参数传入，最终存储在`Job`的`env`中,`InitDriver`即通过`env`来获取
 相关的设置:
 
-{% highlight go  %}
+```go
 var (
     network        *net.IPNet
     enableIPTables = job.GetenvBool("EnableIptables")
@@ -70,44 +70,44 @@ var (
     bridgeIP       = job.Getenv("BridgeIP")
     fixedCIDR      = job.Getenv("FixedCIDR")
 )
-{% endhighlight %}
+```
 
 之后便是对`ip`参数进行设置:
 
-{% highlight go  %}
+```go
 
 defaultBindingIP  = net.ParseIP("0.0.0.0")
 
 if defaultIP := job.Getenv("DefaultBindingIP"); defaultIP != "" {
     defaultBindingIP = net.ParseIP(defaultIP)
 }
-{% endhighlight %}
+```
 
 
 然后便是判断是否使用默认的网桥`docker0`:
 
-{% highlight go  %}
+```go
 bridgeIface = job.Getenv("BridgeIface")
 usingDefaultBridge := false
 if bridgeIface == "" {
 	usingDefaultBridge = true
 	bridgeIface = DefaultNetworkBridge
 }
-{% endhighlight %}
+```
 
 
 ## 网桥设置
 确定好将要使用的网桥后,便需要对其IP地址进行相关设定。首先看能不能获取到其IP地址:
-{% highlight go  %}
+```go
 addr, err := networkdriver.GetIfaceAddr(bridgeIface)
-{% endhighlight %}
+```
 
 `docker`服务停止后`docker0`网桥并不删掉，所以如果不是第一次使用，都能成功获取
 到`ip`。我们来看下首次创建`docker0`的情况:
 
 
 
-{% highlight go  %}
+```go
 if !usingDefaultBridge {
     return job.Error(err)
 }
@@ -121,14 +121,14 @@ if err != nil {
     return job.Error(err)
 }
 network = addr.(*net.IPNet)
-{% endhighlight %}
+```
 
 
 如果要使用自己指定的网桥而且获取不到IP，那就只能当成错误返回了。如果是使用
 `docker0`且获取不到IP，则就创建并且赋给它IP，`configureBridge`参数为`bridgeIp`，
 即命令行里的`-bip`,一般都没有指定，默认值为空。
 
-{% highlight go  %}
+```go
 addrs = []string{
     "172.17.42.1/16",
     "10.0.42.1/16",  
@@ -159,7 +159,7 @@ for _, addr := range addrs {
     }
 }
 
-{% endhighlight %}
+```
 
 每次给`docker0`分配IP，都会从`addrs`一个一个地尝试，所以我们一般看到的运行中的
 `docker0`的IP都是`172.17.42.1/16`。对`addrs`中的IP,要检测其与`nameservers`和路由
@@ -175,13 +175,13 @@ for _, addr := range addrs {
 
 ## IPTables 设置
 
-{% highlight go  %}
+```go
 if enableIPTables {
     if err := setupIPTables(addr, icc, ipMasq); err != nil {
         return job.Error(err)
     }
 }
-{% endhighlight %}
+```
 
 
 下面的重点部分就是介绍`setupIPTables`函数的流程。因为所涉及到`IPTables`部分较多，
@@ -196,7 +196,7 @@ if enableIPTables {
 简单来说就是用来做对包的源地址做地址转换(NAT)
 
 如果`ipmasq`参数为真，则插入一条相应的rule(先检查是否存在，不存在则插入)
-{% highlight go  %}
+```go
 
 natArgs := []string{"POSTROUTING", "-t", "nat", "-s", addr.String(), "!", "-o", bridgeIface, "-j", "MASQUERADE"}
 
@@ -208,7 +208,7 @@ if !iptables.Exists(natArgs...) {
     }
 }
 
-{% endhighlight %}
+```
 
 从日志中我们可以看到实际运行的命令是：
 ![ ][2]
@@ -223,7 +223,7 @@ if !iptables.Exists(natArgs...) {
 
 确保`container`之间包的转发的`target`为`ACCEPT`。
 
-{% highlight go  %}
+```go
 iptables.Raw(append([]string{"-D"}, dropArgs...)...)
 if !iptables.Exists(acceptArgs...) {
     log.Debugf("Enable inter-container communication")
@@ -233,12 +233,12 @@ if !iptables.Exists(acceptArgs...) {
         return fmt.Errorf("Error enabling intercontainer communication: %s", output)
     }
 }
-{% endhighlight %}
+```
 
 - Non-Intercontainer Outgoing Packets
 
 对于`non-intercontainer outgoing packets`,也将其`target`设为`ACCEPT`:
-{% highlight go  %}
+```go
 outgoingArgs := []string{"FORWARD", "-i", bridgeIface, "!", "-o", bridgeIface, "-j", "ACCEPT"}
 if !iptables.Exists(outgoingArgs...) {
 	if output, err := iptables.Raw(append([]string{"-I"}, outgoingArgs...)...); err != nil {
@@ -247,7 +247,7 @@ if !iptables.Exists(outgoingArgs...) {
 		return &iptables.ChainError{Chain: "FORWARD outgoing", Output: output}
 	}
 }
-{% endhighlight %}
+```
 
 实际执行的命令为:
 `/sbin/iptables --wait -C FORWARD -i docker0 ! -o docker0 -j ACCEPT`
@@ -259,7 +259,7 @@ if !iptables.Exists(outgoingArgs...) {
 
 Accept incoming packets for existing connections
 
-{% highlight go  %}
+```go
 existingArgs := []string{"FORWARD", "-o", bridgeIface, "-m", "conntrack", "--ctstate", "RELATED,ESTABLISHED", "-j", "ACCEPT"}
 
 if !iptables.Exists(existingArgs...) {
@@ -269,7 +269,7 @@ if !iptables.Exists(existingArgs...) {
         return &iptables.ChainError{Chain: "FORWARD incoming", Output: output}
     }
 }
-{% endhighlight %}
+```
 
 实际执行的命令为:
 `/sbin/iptables --wait -C FORWARD -o docker0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEP`
@@ -287,15 +287,15 @@ if !iptables.Exists(existingArgs...) {
 户自定义的`chain`,`-A`在一条`chain`后面添加一条规则.)
 
 首先是尝试删除`docker chain`中的规则及其本身:
-{% highlight go  %}
+```go
 if err := iptables.RemoveExistingChain("DOCKER"); err != nil {
     return job.Error(err)
 }
-{% endhighlight %}
+```
 
 然后添加新的空的`docker chain`：
 
-{% highlight go  %}
+```go
 if enableIPTables {
     chain, err := iptables.NewChain("DOCKER", bridgeIface)
     if err != nil {
@@ -303,7 +303,7 @@ if enableIPTables {
     }
     portmapper.SetIptablesChain(chain)
 }
-{% endhighlight %}
+```
 
 
 最终的`nat`的表的结果如下图所示:
