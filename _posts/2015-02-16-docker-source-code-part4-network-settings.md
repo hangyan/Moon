@@ -2,7 +2,7 @@
 layout: post
 title: docker源码分析(4) -- 网络设置
 tags: docker
-tags: [docker,source,golang]
+tags: [docker]
 imagefeature:
 excerpt: "Docker daemon启动时网络设置部分"
 comments: true

@@ -2,7 +2,7 @@
 layout: post
 title: docker源码分析(6) -- 镜像删除
 tags: docker
-tags: [docker,source,golang]
+tags: [docker]
 imagefeature:
 comments: true
 share: true
