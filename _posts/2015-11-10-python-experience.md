@@ -2,7 +2,7 @@
 layout: post
 title: "一点python的经验"
 modified: 2015-11-10
-tags: [python, language]
+tags: [language]
 category: 编程
 image:
     feature: abstract-12.jpg

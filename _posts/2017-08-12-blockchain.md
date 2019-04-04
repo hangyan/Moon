@@ -2,7 +2,7 @@
 layout: post
 title: "Blockchain"
 date: 2017-08-12 16:52
-tags: [decentralized, blockchain, bitcoin]
+tags: [blockchain]
 excerpt: "比特币,区块链"
 comments: true
 category: 编程
