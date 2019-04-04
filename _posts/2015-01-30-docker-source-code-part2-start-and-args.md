@@ -35,14 +35,14 @@ docker的`main`函数位于`github.com/docker/docker/docker/docker.go`文件中�
 在docker的`main`函数中，命令行参数解析的功能主要由`mflag`包提供，而在`main`里只
 需要这一句调用 :
 
-{% highlight go %}
+```go
 import (
 	flag "github.com/docker/docker/pkg/mflag"
 	...
 )
 
 flag.Parse()
-{% endhighlight %}
+```
 
 
 看函数名的意思，应该就是直接开始解析了。那解析前的设定在哪呢？
@@ -57,13 +57,13 @@ flag.Parse()
 
 `github.com/docker/docker/docker/flags.go`:
 
-{% highlight go %}
+``` go
 flVersion     = flag.Bool([]string{"v", "-version"}, false, "Print version information and quit")
 flDaemon      = flag.Bool([]string{"d", "-daemon"}, false, "Enable daemon mode")
 flDebug       = flag.Bool([]string{"D", "-debug"}, false, "Enable debug mode")
 ...
 flLogLevel    = flag.String([]string{"l", "-log-level"}, "info", "Set the logging level")
-{% endhighlight %}
+```
 
 在命令行里输入`docker`看下:
 
@@ -75,17 +75,17 @@ flLogLevel    = flag.String([]string{"l", "-log-level"}, "info", "Set the loggin
 
 `github.com/docker/docker/pkg/mflag/flag.go`:
 
-{% highlight go %}
+```go
  func Bool(names []string, value bool, usage string) *bool {
 	 return CommandLine.Bool(names, value, usage)
  }
-{% endhighlight %}
+```
 
 各个参数依其数据类型分类,我们先看看`CommandLine`是什么 :
 
 `github.com/docker/docker/pkg/mflag/flag.go` :
 
-{% highlight go %}
+```go
  var CommandLine = NewFlagSet(os.Args[0], ExitOnError)
 
  func NewFlagSet(name string, errorHandling ErrorHandling) *FlagSet {
@@ -95,7 +95,8 @@ flLogLevel    = flag.String([]string{"l", "-log-level"}, "info", "Set the loggin
 	 }
 	 return f
  }
-{% endhighlight %}
+```
+
 `CommandLine`属于`package-level`的变量，在被docker的`main`包导入时就已经初始化好
 了。`CommandLine`就是我们预设命令行参数的存储地方，其类型为`FlagSet`。
 
@@ -152,7 +153,7 @@ flLogLevel    = flag.String([]string{"l", "-log-level"}, "info", "Set the loggin
 
 `github.com/docker/docker/pkg/mflag/flag.go#parseOne()` :
 
-{% highlight go %}
+```go
 for i, n := range flag.Names {
 	if n == fmt.Sprintf("#%s", name) {
 		replacement := ""
@@ -170,7 +171,7 @@ for i, n := range flag.Names {
     }
 }  
 
-{% endhighlight %}
+```
 效果如下图所示 :
 
 ![deprecated](http://hangyan.github.io/images/posts/docker/source-2/deprecated.png)
@@ -184,18 +185,18 @@ for i, n := range flag.Names {
 这里说的设置过程是指在`package`初始化时所设定的支持的命令行参数的过程，以前面提
 到过的`daemon`参数为例。
 
-{% highlight go %}
+```go
  flDaemon      = flag.Bool([]string{"d", "-daemon"}, false, "Enable daemon mode")
-{% endhighlight %}
+```
 
 前面已经提到过，`flag`大部分的操作都由`CommandLine`变量执行,调用结果为:
-{% highlight go %}
+```go
 func (f *FlagSet) Bool(names []string, value bool, usage string) *bool {
 	p := new(bool)
 	f.BoolVar(p, names, value, usage)
 	return p
 }
-{% endhighlight %}
+```
 
 基本上还是向下传递参数，只不过多了一个`p`,`p`是一个指针，`flDaemon`和`p`指向同一
 个地址，即参数的值。前面说过在解析过程中会动态更新参数的值，用指针既可保证
@@ -264,7 +265,7 @@ type boolFlag interface {
 
 再回到原来的处理流程，看看最终的`Var`函数的实现 :
 
-{% highlight go linenos %}
+```go
 func (f *FlagSet) Var(value Value, names []string, usage string) {
 	flag := &Flag{names, usage, value, value.String()}
 	for _, name := range names {
@@ -286,7 +287,7 @@ func (f *FlagSet) Var(value Value, names []string, usage string) {
 		f.formal[name] = flag
 	}
 }
-{% endhighlight %}
+```
 
 整个逻辑比较简单，先生成相应的`Flag`变量，然后建立各个参数名(长短名，将要废弃的
 名字)对其的映射。各个参数均以此流程设置，最后都存储在`FlagSet`的`formal`映射表中，
