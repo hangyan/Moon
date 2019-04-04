@@ -2,7 +2,7 @@
 layout: post
 title: 人类和机器人的未来
 category: 社会学
-tags: [philosophy,technology,robot]
+tags: [社会学]
 imagefeature:
 comments: true
 share: true

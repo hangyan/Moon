@@ -2,7 +2,7 @@
 layout: post
 title: docker容器内多进程的管理方案
 category: docker
-tags: [docker,monitor]
+tags: [docker]
 imagefeature:
 comments: true
 share: true
