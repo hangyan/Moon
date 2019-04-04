@@ -12,6 +12,14 @@ description: 技术博客
 # Flags below are optional
 #
 
+
+collections:
+  microblog:
+    output: true
+    permalink: microblog/:year/:month/:title/
+
+
+
 # URL of your avatar or profile pic (you could use your GitHub profile pic)
 avatar: /logo.png
 
@@ -27,6 +35,8 @@ navigation:
     url: /archive
   - name: 标签
     url: /tags
+  - name: 微博
+    url: /microblog
 
 # Pagination
 paginate: 5
