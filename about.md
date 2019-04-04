@@ -4,6 +4,10 @@ title: About
 permalink: /about/
 ---
 
+Atom:
+
+* [Blog](https://yanhang.me/feed.xml)
+
 
 Links
 
