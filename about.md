@@ -12,3 +12,4 @@ Atom:
 Links
 
 * [乐天](https://www.letiantian.me/)
+* [兔之](http://fuzhii.com/)
