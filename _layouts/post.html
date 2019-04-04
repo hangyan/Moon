@@ -36,11 +36,12 @@ layout: default
     {% if page.next.url %}
       <span class="next" >
           <a href="{{ site.url }}{{ site.baseurl }}{{ page.next.url }}">
-            {{ page.next.title }}
+           &gt; {{ page.next.title }}
           </A>
       </span>
     {% endif %}
   </div>
 
+  _
   {% include disqus.html %}
 </article>
