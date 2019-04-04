@@ -3,7 +3,7 @@ layout: post
 title: Kubernetes 笔记
 date: 2017-08-18
 excerpt: "关于Kubernetes的一些零碎笔记"
-tags: [kubernetes, desgin, api]
+tags: [架构]
 comments: true
 category: 编程
 redirect_from:
