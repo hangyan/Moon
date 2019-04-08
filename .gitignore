@@ -1,2 +1,4 @@
 _site/
 .vscode
+node_modules/
+_posts/*.html
