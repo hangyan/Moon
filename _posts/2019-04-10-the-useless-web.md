@@ -29,7 +29,7 @@ comments: true
 被偷了 bucket 的[海象](http://ihasabucket.com/)...
 
 
-![http://ihasabucket.com/]({{ site.url }}/images/useless-web/bucket.png)
+![http://ihasabucket.com/]({{ site.url }}/images/useless-web/bucket.jpg)
 
 
 这是一个几乎无限长的例子。几乎也是自由互联网的意义所在。很像`<Rick and Morty>`里他们看的宇宙电台一样，无穷无尽的稀奇古怪的电视节目。
