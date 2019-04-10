@@ -13,20 +13,20 @@ comments: true
 
 ![index]({{ site.url }}/images/useless-web/index.png)
 
-有最神奇的可以随鼠标晃动的`东西`:
+有最神奇的可以随鼠标晃动的[东西]([http://www.staggeringbeauty.com/):
 
 ![http://www.staggeringbeauty.com/]({{ site.url }}/images/useless-web/beauty.png)
 
-一个向下拉有无限长的腿的马:
+一个向下拉有无限长的腿的[马](http://endless.horse/):
 
 ![http://endless.horse/]({{ site.url }}/images/useless-web/horse.png)
 
-一个不知道什么的隐喻：
+一个不知道什么的[隐喻]([http://metaphorsofinfinity.com/)：
 
 ![http://metaphorsofinfinity.com/]({{ site.url }}/images/useless-web/meta.png)
 
 
-被偷了 bucket 的海象...
+被偷了 bucket 的[海象](http://ihasabucket.com/)...
 
 
 ![http://ihasabucket.com/]({{ site.url }}/images/useless-web/bucket.png)
