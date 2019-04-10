@@ -13,7 +13,7 @@ comments: true
 
 ![index]({{ site.url }}/images/useless-web/index.png)
 
-有最神奇的可以随鼠标晃动的[东西]([http://www.staggeringbeauty.com/):
+有最神奇的可以随鼠标晃动的[东西](http://www.staggeringbeauty.com/):
 
 ![http://www.staggeringbeauty.com/]({{ site.url }}/images/useless-web/beauty.png)
 
@@ -21,7 +21,7 @@ comments: true
 
 ![http://endless.horse/]({{ site.url }}/images/useless-web/horse.png)
 
-一个不知道什么的[隐喻]([http://metaphorsofinfinity.com/)：
+一个不知道什么的[隐喻](http://metaphorsofinfinity.com/)：
 
 ![http://metaphorsofinfinity.com/]({{ site.url }}/images/useless-web/meta.png)
 
