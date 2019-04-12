@@ -6,8 +6,8 @@ permalink: /about/
 
 Atom:
 
-* [Blog](https://yanhang.me/feed.xml)
-* [MicroBlog](https://yanhang.me/microblog-feed.xml)
+* [博客](https://yanhang.me/feed.xml)
+* [微博](https://yanhang.me/microblog-feed.xml)
 
 
 Links
