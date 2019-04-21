@@ -21,3 +21,9 @@ Blogs
 
 * [王垠](http://www.yinwang.org/)
 
+
+
+古老的网站，互联网的黄金时代:
+
+* [秘密花园](http://www.yini.org/)
+* [病孩子](http://www.sickbaby.org/)
