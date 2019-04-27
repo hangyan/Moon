@@ -2,7 +2,7 @@
 layout: post
 title: 手机的竞争力
 date: 2019-04-11 22:31:24 +0800
-tags: 商业
+tags: [商业,手机]
 excerpt: 一个新的竞争阶段
 comments: true
 ---
